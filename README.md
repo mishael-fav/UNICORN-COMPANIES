@@ -4,7 +4,9 @@
 This project analyzes a global dataset of **Unicorn Companies** — private companies valued at **over $1 billion** — using **SQL** for in-depth exploratory data analysis (EDA).  
 The goal is to uncover trends in valuations, industries, geography, investors, and growth patterns over time.
 
-![PowerBI Dashboard](Unicorn%20PowerBI%201.png)
+---
+### DASHBOARD
+![PowerBI Dashboard](Unicorn_PowerBI_Dashboard1.png)
 
 ---
 
