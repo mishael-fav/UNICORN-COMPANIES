@@ -140,13 +140,6 @@ The goal is to uncover trends in valuations, industries, geography, investors, a
 
 ---
 
-## 👥 Acknowledgements
-
-Dataset source: [likely Kaggle or Crunchbase-derived — customize based on your source].  
-Thanks to the open data community for enabling unicorn trend analysis.
-
----
-
 ## 💬 Contact
 
 For questions or collaboration opportunities, feel free to connect!
