@@ -136,8 +136,7 @@ The goal is to uncover trends in valuations, industries, geography, investors, a
 ## 📚 Project Files
 
 - [`Unicorn companies.sql`](./Unicorn%20companies.sql) → Main SQL Analysis Script  
-- [`Unicorn companies.pbix`](./Unicorn%20companies.pbix)
-- [`Unicorn companies.pbix`](https://app.powerbi.com/groups/me/reports/fbf97eb0-1b52-4837-9bf0-d491b775fd20?ctid=319a61c8-ee1e-4161-8f35-b9553227afd7&pbi_source=linkShare)
+- [`link to Unicorn companies dashboard`](https://app.powerbi.com/groups/me/reports/fbf97eb0-1b52-4837-9bf0-d491b775fd20?ctid=319a61c8-ee1e-4161-8f35-b9553227afd7&pbi_source=linkShare)
 
 ---
 
