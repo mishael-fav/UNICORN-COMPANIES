@@ -51,9 +51,11 @@ The goal is to uncover trends in valuations, industries, geography, investors, a
 ### 1️⃣ General Overview
 
 - Total unicorn companies in dataset
+```sql
+SELECT * FROM Online_Retail WHERE CustomerID IS NOT NULL;
 - Min, max, average valuations
 - Companies valued **above average**
-
+```
 ### 2️⃣ Geographical Insights
 
 - Top **countries** and **cities** by number of unicorns
