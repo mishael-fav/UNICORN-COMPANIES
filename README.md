@@ -51,48 +51,261 @@ The goal is to uncover trends in valuations, industries, geography, investors, a
 ### 1️⃣ General Overview
 
 - Total unicorn companies in dataset
-```sql
-SELECT * FROM Online_Retail WHERE CustomerID IS NOT NULL;
 - Min, max, average valuations
 - Companies valued **above average**
+
+```sql
+--General overview of the Unicorn Companies
+SELECT 
+    COUNT(*) AS total_companies,
+    MIN(Valuation2) AS min_valuation,
+    MAX(Valuation2) AS max_valuation,
+    AVG(Valuation2) AS avg_valuation
+FROM Unicorn_C;
 ```
+
 ### 2️⃣ Geographical Insights
 
 - Top **countries** and **cities** by number of unicorns
+```sql
+-- Top 10 Countries by Number of Unicorns
+SELECT Country, COUNT(*) AS unicorn_count
+FROM Unicorn_C
+GROUP BY Country
+ORDER BY unicorn_count DESC;
+
+-- Top 10 Cities by Number of Unicorns
+SELECT City, Country, COUNT(*) AS unicorn_count
+FROM Unicorn_C
+GROUP BY City, Country
+ORDER BY unicorn_count DESC
+;
+```
 - % share of unicorns by country & city
+```sql
+-- Percentage of unicorn in TOTAL by City and Country
+SELECT TOP 10 
+    City, 
+    Country, 
+    COUNT(*) AS unicorn_count,
+    ROUND(CAST(COUNT(*) AS FLOAT) / 
+          (SELECT COUNT(*) FROM Unicorn_C) * 100, 2) AS percentage_of_total
+FROM Unicorn_C
+GROUP BY City, Country
+ORDER BY unicorn_count DESC;
+```
 - Emerging **innovation hubs** for unicorn creation
 
 ### 3️⃣ Industry Trends
 
 - Top industries globally and by continent
+```sql
+-- Top Industries by Continent
+SELECT Continent, Industry, COUNT(*) AS industry_count
+FROM Unicorn_C
+GROUP BY Continent, Industry
+ORDER BY industry_count DESC;
+
+-- By Country
+SELECT Country, Industry, COUNT(*) AS industry_count
+FROM Unicorn_C
+GROUP BY Country, Industry
+ORDER BY industry_count DESC;
+```
 - Industries driving the most unicorn creation
+```sql
+-- Industries have the most or highest-valued unicorns
+SELECT 
+    Industry, 
+    COUNT(*) AS total_companies,
+    SUM(Valuation2) AS total_valuation
+FROM Unicorn_C
+GROUP BY Industry
+ORDER BY total_valuation DESC;
+```
 - Valuation growth patterns by industry (pre/post 2021)
+
 
 ### 4️⃣ Investor Analysis
 
 - Top investors by number of unicorns funded
+```sql
+--TOP 10 INVESTORS
+SELECT TOP 10 investor, COUNT(*) AS num_investments
+FROM (
+    SELECT [Investor 1] AS investor FROM Unicorn_C WHERE [Investor 1] IS NOT NULL
+    UNION ALL
+    SELECT [Investor 2] FROM Unicorn_C WHERE [Investor 2] IS NOT NULL
+    UNION ALL
+    SELECT [Investor 3] FROM Unicorn_C WHERE [Investor 3] IS NOT NULL
+    UNION ALL
+    SELECT [Investor 4] FROM Unicorn_C WHERE [Investor 4] IS NOT NULL
+) AS all_investors
+GROUP BY investor
+ORDER BY num_investments DESC
+```
 - Investor influence by country & city
-- **Investor cleaning & transformation** (trim spaces in Excel)
+```sql
+-- Cities and Countries with Top investors
+WITH invest AS (
+    SELECT [Investor 1] AS investor, City, Country FROM Unicorn_C WHERE [Investor 1] IS NOT NULL
+    UNION ALL
+    SELECT [Investor 2], City, Country FROM Unicorn_C WHERE [Investor 2] IS NOT NULL
+    UNION ALL
+    SELECT [Investor 3], City, Country FROM Unicorn_C WHERE [Investor 3] IS NOT NULL
+    UNION ALL
+    SELECT [Investor 4], City, Country FROM Unicorn_C WHERE [Investor 4] IS NOT NULL
+)
+
+SELECT TOP 10
+    investor,
+	City,
+    Country, 
+    COUNT(*) AS num_investments
+FROM invest
+GROUP BY investor, City, Country
+ORDER BY num_investments DESC;
+
+```
 
 ### 5️⃣ Speed to Unicorn
 
 - **Years to unicorn** by company
+```sql
+-- Time to Unicorn per Company
+SELECT 
+    Company, Industry,
+    YEAR([Date Joined]) - [Year Founded] AS years_to_unicorn
+FROM Unicorn_C
+ORDER BY years_to_unicorn ASC;
+
+```
 - Average time to unicorn by industry
+```sql
+-- Average Time to Unicorn by Industry
+SELECT 
+    Industry,
+    ROUND(AVG((YEAR ([Date Joined]) - [Year Founded])), 0) AS Avg_Years_To_Unicorn
+FROM Unicorn_C
+WHERE [Year Founded] IS NOT NULL AND [Date Joined] IS NOT NULL
+GROUP BY Industry
+ORDER BY Avg_Years_To_Unicorn;
+```
 - Valuation-to-funding efficiency
+```sql
+--how many dollars in valuation the company achieved for every $1 of investor funding
+SELECT 
+    Company, 
+    Valuation2, 
+    Funding2,
+    ROUND((Valuation2 / Funding2),1) AS valuation_to_funding_ratio
+FROM Unicorn_C
+WHERE Funding2 > 0
+ORDER BY valuation_to_funding_ratio DESC;
+```
 
 ### 6️⃣ Temporal Trends
 
 - Yearly growth in unicorn creation
+```sql
+-- Yearly Average Time to Unicorn
+SELECT 
+	YEAR ([Date Joined]) AS Year_joined,
+    ROUND(AVG((YEAR ([Date Joined]) - [Year Founded])), 0) AS Avg_Years_To_Unicorn
+FROM Unicorn_C
+WHERE [Year Founded] IS NOT NULL AND [Date Joined] IS NOT NULL
+GROUP BY YEAR ([Date Joined])
+ORDER BY Year_joined;
+```
 - **2021 spike** → COVID-driven digital transformation
-- Post-2021 trends (normalization)
+```sql
+-- Number of unicorns per year across industries
+SELECT Industry, YEAR([Date Joined]) Year_joined, COUNT(*) AS industry_count
+FROM Unicorn_C
+WHERE Industry = 'Fintech'
+GROUP BY Industry, YEAR([Date Joined])
+ORDER BY YEAR([Date Joined]);
 
-### 7️⃣ Deep Dives
+-- Unicorn Count by industry in 2021
+SELECT 
+    Industry,
+    COUNT(*) AS unicorns_in_year_2021
+FROM Unicorn_C
+WHERE Industry IS NOT NULL AND [Date Joined] IS NOT NULL AND YEAR([Date Joined])=2021
+GROUP BY Industry, YEAR([Date Joined])
+ORDER BY unicorns_in_year_2021 DESC;
 
-- Unicorn companies founded per year
-- Unicorns per industry, per year
-- Top investors driving **2021 unicorn boom**
+-- Which investors contribute to the spike in unicorn companies in 2021
+-- Top Investors Behind 2021 Unicorns Spike
+WITH investor_cte AS (
+    SELECT [Investor 1] AS Investor FROM Unicorn_C WHERE YEAR([Date Joined]) = 2021 AND [Investor 1] IS NOT NULL
+    UNION ALL
+    SELECT [Investor 2] FROM Unicorn_C WHERE YEAR([Date Joined]) = 2021 AND [Investor 2] IS NOT NULL
+    UNION ALL
+    SELECT [Investor 3] FROM Unicorn_C WHERE YEAR([Date Joined]) = 2021 AND [Investor 3] IS NOT NULL
+    UNION ALL
+    SELECT [Investor 4] FROM Unicorn_C WHERE YEAR([Date Joined]) = 2021 AND [Investor 4] IS NOT NULL
+)
 
----
+SELECT TOP 10 
+    Investor, 
+    COUNT(*) AS Unicorn_Count_2021
+FROM investor_cte
+GROUP BY Investor
+ORDER BY Unicorn_Count_2021 DESC;
+
+-- =============================================
+-- One major factor that contributed to the significant number of Unicorn in 2021 is the Global Pandemic (COVID-19) which restricted movement and instigated a lockdown
+-- COVID-19 accelerated digital adoption in 2021, boosting Fintech and Internet Software & Services.
+-- Lockdowns increased demand for digital payments, online banking, and remote tools,
+-- leading to a surge in unicorns in these sectors due to rapid growth and investor interest.
+```
+- Pre-2021 trends (normalization)
+```sql
+-- The significant emergence of Unicorn Companies in 2021 can be traced down to the COVID-19 pandemic. 
+-- Events like the COVID-19 pandemic are not regular occurences, hence 2021 was excluded from this analysis helps avoid skewed data, 
+-- which could introduce bias and misrepresent trends in industry investment. 
+-- Focusing on 2012–2020 ensures consistency and reliability of insights.
+
+
+-- Yearly Valuation Growth by Industry (Before 2021)
+WITH YearlyIndustryValuation AS (
+    SELECT 
+        Industry,
+        YEAR([Date Joined]) AS Year_Joined,
+        SUM(Valuation2) AS Total_Valuation
+    FROM Unicorn_C
+    WHERE 
+        [Date Joined] IS NOT NULL
+        AND Valuation2 IS NOT NULL
+        AND YEAR([Date Joined]) < 2021
+        AND Industry IS NOT NULL
+    GROUP BY Industry, YEAR([Date Joined])
+),
+
+GrowthCalculation AS (
+    SELECT 
+        Industry,
+        Year_Joined,
+        Total_Valuation,
+        LAG(Total_Valuation) OVER (PARTITION BY Industry ORDER BY Year_Joined) AS Prev_Valuation
+    FROM YearlyIndustryValuation
+)
+
+SELECT 
+    Industry,
+    Year_Joined,
+    Total_Valuation,
+    Prev_Valuation,
+    ROUND(
+        CASE 
+            WHEN Prev_Valuation IS NULL THEN NULL
+            ELSE ((Total_Valuation - Prev_Valuation) / Prev_Valuation) * 100
+        END, 2
+    ) AS YoY_Growth_Percentage
+FROM GrowthCalculation
+ORDER BY Industry, Year_Joined;
+```
 
 ## 📈 Key Insights
 
