@@ -140,16 +140,12 @@ ORDER BY Unicorns_In_2021 DESC;
 
 -- =============================================
 /*
-The surge in unicorn formations observed in 2021 coincides with a unique global environment
-characterized by the COVID-19 pandemic and unprecedented liquidity in capital markets.
+The surge in unicorn formations observed in 2021 coincides with a unique global environment characterized by the COVID-19 pandemic and unprecedented liquidity in capital markets.
 
-While COVID-19 lockdowns accelerated digital adoption, particularly in fintech and
-internet-based services such as digital payments, online banking, and remote platforms
-the scale of unicorn growth in 2021 was also strongly influenced by abundant venture
-capital, low interest rates, and inflated late-stage funding rounds.
+While COVID-19 lockdowns accelerated digital adoption, particularly in fintech and internet-based services such as digital payments, online banking, and remote platforms
+the scale of unicorn growth in 2021 was also strongly influenced by abundant venture capital, low interest rates, and inflated late-stage funding rounds.
 
-Together, pandemic-driven demand acceleration and favorable investment conditions
-created an environment where high-growth technology companies reached $1B valuations
+Together, pandemic-driven demand acceleration and favorable investment conditions created an environment where high-growth technology companies reached $1B valuations
 more rapidly, especially within Fintech and Internet Software & Services sectors.
 */
 
@@ -176,12 +172,9 @@ ORDER BY Investments_2021 DESC;
 -- Analyze "Normal" Market Behavior by Excluding the Covid Spike
 -- =================================================================================================
 /*
-The spike in unicorn formations during 2021 reflects an exceptional period influenced
-by pandemic-related demand shifts and atypical funding conditions(excess liquidity). To prevent outlier
-effects from distorting long-term trends, 2021 data was excluded.
-
-The 2012–2020 window provides a more representative baseline for assessing
-consistent industry and investment dynamics.
+The spike in unicorn formations during 2021 reflects an unprecedented capital liquidity (low-interest-rate) period influenced
+by pandemic-related demand shifts. To prevent outlier effects from distorting long-term trends, 2021 data was excluded.
+The 2012–2020 window provides a more representative baseline for assessing consistent industry and investment dynamics.
 */
 
 
@@ -524,7 +517,8 @@ SELECT * FROM #Investor_Long
 -- =============================================
 --The total of Unicorn Companies as registered by this dataset is 1074, of which 240 companies have valuations above the average.
 -- there have been a gradual increase in emergence Unicorn Companies over the years, with the peak at 2021 (520). 
---this significant increase from a gradual trend can be attributed to the Global Pandemic (COVID-19), w hich acceerated the digital transformation
+-- This significant increase from a gradual trend can be attributed to the convergence of unprecedented capital liquidity (low-interest-rate) and the Global Pandemic (COVID-19), 
+-- which simultaneously fueled venture investment and accelerated digital transformation.
 -- The United State remains the Country with the highest number of Unicorn Companies (562), leading the preceeding country more that 5 margins.
 -- San Francisco tops the list at 148, habouring 26% of the United State Unicorn Companies and 14% world wide, and clocking a wooping 303 Unicorn Companies in 2021
 -- This is followed closely by the New York at 103.
