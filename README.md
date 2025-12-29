@@ -49,18 +49,144 @@ companies like Magic Leap and Ola Cabs to raise capital exceeding their current 
 
 ![CAPITAL EFFICIENCY](dashboard_pic/high_growth_velocity.PNG)
 
+#### SQL-QUERY Snippet
+```sql
+-- -------------------------------------------------------------------------------------------------
+-- STRATEGY 2: THE "HYPER-GROWTH" DETECTOR (Velocity)
+-- Question: Which industries are accelerating?
+-- -------------------------------------------------------------------------------------------------
+SELECT 
+    Industry,
+    COUNT(*) AS Unicorn_Companyount,
+    -- Speed Analysis
+    AVG(Years_To_Unicorn) AS Avg_Years_To_Unicorn,
+    
+    -- Value Velocity: Average Valuation created per year of existence
+    ROUND(AVG(Valuation_Num / NULLIF(Years_To_Unicorn, 0)), 0) AS Avg_Value_Velocity_Per_Year
+FROM #Unicorn_Analysis
+GROUP BY Industry
+HAVING COUNT(*) > 10 -- Filter for significant sample size
+ORDER BY Avg_Value_Velocity_Per_Year DESC;
+
+/*
+The Velocity Analysis highlights a clear sector rotation. Artificial Intelligence has emerged as the true 'Hyper-Growth' leader, 
+achieving unicorn status in just 5.9 years with a value creation rate of $1.1B per year. In contrast, Auto & Transportation is the 
+fastest to $1B (5.03 years), largely due to capital-intensive early funding rounds. Meanwhile, traditional Internet Software appears to be maturing; 
+while it produces the highest volume of unicorns (205), it creates value at less than half the speed ($500M/yr) of the top-performing AI and Consumer sectors
+*/
+```
+
 ### 👑THE "KINGMAKER" NETWORK
 - The "Kingmaker Network" analysis exposes a stark Power Law distribution within the venture capital landscape, where fewer than 1% of the 1,247 active investors occupy the elite "Kingmaker Zone" of high volume and high valuation. While industry titans like Accel (60 unicorns) and Sequoia Capital China ($473B total valuation) dominate through sheer market coverage and scale, the data reveals a secondary tier of "Capital Efficient" snipers. Most notably, Threshold Ventures emerges as the global ROI leader with a staggering 1,006x return multiple, proving that while the "Kingmakers" control the volume, specialized firms are capable of outperforming the giants on a per-deal efficiency basis.
 
 ![CAPITAL EFFICIENCY](dashboard_pic/kingmaker_network.PNG)
+
+#### SQL-QUERY Snippet
+```sql
+-- -------------------------------------------------------------------------------------------------
+-- STRATEGY 3: THE "KINGMAKER" NETWORK (Syndicate Analysis)
+-- Who invests together? 
+-- -------------------------------------------------------------------------------------------------
+SELECT TOP 50
+    A.Investor AS Investor_A,
+    B.Investor AS Investor_B,
+    COUNT(DISTINCT A.Company) AS Joint_Investments,
+    STRING_AGG(A.Company, ', ') AS Shared_Portfolio
+FROM #Investor_Long A
+JOIN #Investor_Long B ON A.Company = B.Company 
+    AND A.Investor < B.Investor 
+GROUP BY A.Investor, B.Investor
+HAVING COUNT(DISTINCT A.Company) >= 3 
+ORDER BY Joint_Investments DESC;
+
+/*
+The Syndicate Analysis reveals distinct 'Power Blocs' driving unicorn creation. The strongest global alliance is the 'China Axis' 
+between Sequoia China and Tencent (9 joint investments), combining traditional VC discipline with massive corporate distribution. 
+In the US, the data identifies a clear 'Graduation Pipeline' where Accel frequently leads growth rounds for Y Combinator alumni (6 joint investments). 
+Furthermore, Accel emerges as the ecosystem's 'Super-Connector,' appearing in 8 of the top 50 strongest co-investment pairs, 
+signaling its role as the central hub of global unicorn capital.
+*/
+```
 
 ### 🌎GEOGRAPHIC ARBITRAGE
 - Utilizing a **"Geographical Arbitrage"** framework, this dashboard analyzes the $3.71T global unicorn ecosystem to identify high-yield investment targets. By mapping Valuation against Volume, the analysis isolates **"Emerging Efficiency Hubs"** in the matrix's bottom-right quadrant—such as **Austin ($1.4B)** and **Hangzhou ($1.6B)**—that offer mature innovation at a discount compared to saturated "Premium" markets. While **North America** leads in overall stability as the most efficient continent (6.9x ratio), **South Korea** emerges as the global leader in capital efficiency with a massive **20x ROI multiple**, demonstrating that significant arbitrage opportunities exist outside of traditional, high-cost tech capitals.
 
 ![CAPITAL EFFICIENCY](dashboard_pic/CAPITAL_EFFICIENCY.PNG)
 
+#### SQL-QUERY Snippet
+```sql
+-- -------------------------------------------------------------------------------------------------
+-- STRATEGY 4: GEOGRAPHIC ARBITRAGE
+-- Where are the "Undervalued" Hubs?
+-- -------------------------------------------------------------------------------------------------
+SELECT 
+    Continent,
+    Country,
+    City,
+    COUNT(*) AS Unicorn_Count,
+    ROUND(AVG(Valuation_Num), 2) AS Avg_Valuation,
+    
+    -- Rank cities within their continent by Average Valuation
+    DENSE_RANK() OVER (PARTITION BY Continent ORDER BY AVG(Valuation_Num) DESC) AS Rank_In_Continent
+FROM #Unicorn_Analysis
+GROUP BY Continent, Country, City
+HAVING COUNT(*) > 2
+ORDER BY Avg_Valuation DESC;
+
+/*
+The Geographic Arbitrage analysis identifies Stockholm and Shenzhen as high-efficiency hubs where average valuations ($10.5B and $7.4B respectively) 
+significantly outperform the volume-heavy hubs of London and Beijing. In the US, the data reveals a quality-over-quantity dynamic in Boston, 
+which commands the second-highest average valuation ($4.3B)—nearly double that of New York City ($2.2B), suggesting that specialized deep-tech ecosystems
+yield higher returns per startup than generalist commercial hubs.
+*/
+```
 
 ---
+
+### **📋 Key Insights & Findings**
+
+#### **1. Macro Market Trends**
+
+* **Total Ecosystem Size:** The dataset tracks **1,074 Unicorn Companies** globally.
+* **Valuation Distribution:** Only **240 companies (22%)** hold valuations above the global average, indicating a top-heavy market where a few "Decacorns" drive skewed averages.
+* **The 2021 Peak:** There has been a gradual increase in unicorn emergence over the last decade, culminating in a massive spike in **2021 with 520 new unicorns**.
+* **The Driver:** This exponential increase can be attributed to the convergence of the **Global Pandemic (COVID-19)**—which accelerated digital transformation—and **unprecedented capital liquidity** (low-interest rates), which flooded the market with venture capital.
+
+#### **2. Geographic Dominance**
+
+* **US Hegemony:** The **United States** leads with **562 Unicorns**, outperforming the next closest country (China) by a margin of more than **5x**.
+* **The "Super-Hubs":**
+* **San Francisco** is the undisputed capital, home to **148 Unicorns** (26% of the US total and 14% of the global total). In 2021 alone, the city recorded a staggering **303** active high-growth companies.
+* **New York** follows as a strong second major hub with **103** unicorns.
+
+
+
+---
+
+### **📈 Sector Evolution Analysis**
+
+#### **🚀 High-Growth & Emerging Sectors**
+
+* **Fintech Dominance:** The fastest-growing vertical, surging from **11.0% (2016)** to **26.7% (2022)**, signaling massive investor confidence in financial digitization.
+* **AI & Big Data:** Showed steady, mature growth from **9.8% (2020)** to **12.3% (2022)**, reflecting widespread enterprise adoption of analytics and machine learning.
+* **SaaS (Software as a Service):** Peaked at **8.6% (2021)** before a slight dip, maintaining consistent relevance as the backbone of B2B infrastructure.
+
+#### **⚠️ The "2021 Anomaly" (Short-Term Spikes)**
+
+*Certain sectors experienced a "Covid Bubble" driven by abundant capital and urgent pandemic needs, followed by a correction.*
+
+* **HealthTech:** Peaked at **7.6% (2020)** → Corrected to **5.1% (2022)**.
+* **Biotech:** Peaked at **6.3% (2020)** → Corrected to **3.7% (2022)**.
+* **E-Commerce:** Spiked to a high of **15.5% (2020)** during global lockdowns but normalized to **10.4% (2022)**.
+
+#### **🔻 Declining Sectors**
+
+* **Real Estate Tech:** Saw a significant decline from **9.0% (2016)** to **3.4% (2022)**, struggling with market saturation and interest rate headwinds.
+* **Manufacturing:** Dropped from **6.0% (2016)** to **2.8% (2022)**, indicating limited Venture Capital appeal compared to software-based scalability.
+
+#### **⚡ Hype-Driven Volatility**
+
+* **Web3 & Blockchain:** Experienced explosive growth from **1.9% (2020)** to **6.7% (2021)**, then stabilized at **5.4% (2022)**. This sector shows strong momentum but remains highly volatile compared to traditional tech.
 
 ## 🗂 Dataset
 
