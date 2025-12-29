@@ -1,8 +1,8 @@
 
-# 🦄 Unicorn Companies Data Analysis
+# Global Unicorn Arbitrage: Ecosystem Efficiency Dashboard
+## Identifying high-ROI "Emerging Efficiency Hubs" vs. saturated "Premium Markets" for venture capital allocation
 
-This project analyzes a global dataset of **Unicorn Companies** — private companies valued at **over $1 billion** — using **SQL** for in-depth exploratory data analysis (EDA).  
-The goal is to uncover trends in valuations, industries, geography, investors, and growth patterns over time.
+### This Power BI project analyzes the landscape of "Unicorn" companies **(startups valued at $1B+)** to identify optimal investment strategies. Moving beyond simple counts, this dashboard uses a "Geography Arbitrage" framework to classify global ecosystems into "Emerging Efficiency Hubs" (Low Entry Price, High Opportunity) versus "Premium Saturated Hubs" (High Entry Price, High Stability)
 
 ---
 ### DASHBOARD
