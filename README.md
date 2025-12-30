@@ -190,7 +190,7 @@ yield higher returns per startup than generalist commercial hubs.
 
 ---
 
-## 🗂 Methodology / Code Snippet
+### 🗂 Methodology / Code Snippet
 
 ``` sql
 -- =================================================================================================
@@ -313,10 +313,212 @@ ORDER BY Total_Valuation DESC;
 ```
 ```sql
 
+-- =================================================================================================
+-- STAGE 4: GROWTH & TRENDS (Pre-2021 Analysis)
+-- Analyze "Normal" Market Behavior by Excluding the Covid Spike
+-- =================================================================================================
+/*
+The spike in unicorn formations during 2021 reflects an exceptional period influenced
+by pandemic-related demand shifts and atypical funding conditions(excess liquidity). To prevent outlier
+effects from distorting long-term trends, 2021 data was excluded.
+
+The 2012–2020 window provides a more representative baseline for assessing
+consistent industry and investment dynamics.
+*/
+
+
+-- 4.1 Yearly Valuation Growth by Industry (Before 2021)
+-- Calculates Year-Over-Year (YoY) growth % to see which industries were heating up naturally.
+WITH YearlyIndustryValuation AS (
+    SELECT 
+        Industry,
+        Year_Joined,
+        SUM(Valuation_Num) AS Total_Valuation
+    FROM #Unicorn_Analysis
+    WHERE Year_Joined < 2021 -- Excluding the Anomaly
+    GROUP BY Industry, Year_Joined
+),
+GrowthCalculation AS (
+    SELECT 
+        Industry,
+        Year_Joined,
+        Total_Valuation,
+        LAG(Total_Valuation) OVER (PARTITION BY Industry ORDER BY Year_Joined) AS Prev_Valuation
+    FROM YearlyIndustryValuation
+)
+SELECT 
+    Industry,
+    Year_Joined,
+    Total_Valuation,
+    Prev_Valuation,
+    ROUND(
+        CASE 
+            WHEN Prev_Valuation IS NULL THEN NULL
+            ELSE ((Total_Valuation - Prev_Valuation) / Prev_Valuation) * 100
+        END, 2
+    ) AS YoY_Growth_Percentage
+FROM GrowthCalculation
+ORDER BY Industry, Year_Joined;
+
+
+-- 4.2 Industry Market Share Over Time (Pre-2021)
+-- Shows how "Dominance" shifted (e.g., from Hardware to Fintech)
+WITH IndustryYTD AS (
+    SELECT 
+        Industry,
+        Year_Joined,
+        SUM(Valuation_Num) AS Industry_Valuation
+    FROM #Unicorn_Analysis
+    WHERE Year_Joined <= 2020
+    GROUP BY Industry, Year_Joined
+),
+TotalYTD AS (
+    SELECT Year_Joined, SUM(Industry_Valuation) AS Total_Valuation
+    FROM IndustryYTD
+    GROUP BY Year_Joined
+)
+SELECT 
+    i.Industry,
+    i.Year_Joined,
+    i.Industry_Valuation,
+    t.Total_Valuation,
+    ROUND(100.0 * i.Industry_Valuation / t.Total_Valuation, 2) AS Percentage_Share
+FROM IndustryYTD i
+JOIN TotalYTD t ON i.Year_Joined = t.Year_Joined
+ORDER BY i.Year_Joined, Percentage_Share DESC;
+
+
+-- 4.3 Yearly Growth by Investor (Before 2021)
+-- Which investors were scaling up their portfolio value consistently?
+WITH InvestorStats AS (
+    -- Join Investor List to Main Table to get Valuations
+    SELECT 
+        i.Investor,
+        u.Year_Joined,
+        SUM(u.Valuation_Num) AS Total_Valuation
+    FROM #Investor_Long i
+    JOIN #Unicorn_Analysis u ON i.Company = u.Company
+    WHERE u.Year_Joined < 2021
+    GROUP BY i.Investor, u.Year_Joined
+),
+InvestorGrowth AS (
+    SELECT 
+        Investor,
+        Year_Joined,
+        Total_Valuation,
+        LAG(Total_Valuation) OVER (PARTITION BY Investor ORDER BY Year_Joined) AS Prev_Valuation
+    FROM InvestorStats
+)
+SELECT 
+    Investor,
+    Year_Joined,
+    Total_Valuation,
+    Prev_Valuation,
+    ROUND(
+        CASE 
+            WHEN Prev_Valuation IS NULL THEN NULL
+            ELSE ((Total_Valuation - Prev_Valuation) / Prev_Valuation) * 100
+        END, 2
+    ) AS YoY_Growth_Percentage
+FROM InvestorGrowth
+ORDER BY Investor, Year_Joined;
+
+```
+```sql
+-- =================================================================================================
+-- STAGE 5: POST-SPIKE CORRECTION (The "Hangover" Analysis)
+-- Determine if 2022 was a "Crash" or just a "Return to Normal" (Mean Reversion).
+-- =================================================================================================
+
+-- 5.1 The "Correction" Magnitude (Drop form Peak)
+-- Calculates exactly how hard the market fell from 2021 to 2022.
+WITH YearlyCounts AS (
+    SELECT 
+        Year_Joined, 
+        COUNT(*) AS Unicorn_Count
+    FROM #Unicorn_Analysis
+    WHERE Year_Joined >= 2018 -- Look at the immediate window
+    GROUP BY Year_Joined
+),
+GrowthCalc AS (
+    SELECT 
+        Year_Joined,
+        Unicorn_Count,
+        LAG(Unicorn_Count) OVER (ORDER BY Year_Joined) AS Prev_Year_Count
+    FROM YearlyCounts
+)
+SELECT 
+    Year_Joined,
+    Unicorn_Count,
+    Prev_Year_Count,
+    -- Calculate the Percentage Drop
+    CAST(ROUND((Unicorn_Count - Prev_Year_Count) * 100.0 / NULLIF(Prev_Year_Count, 0), 2) AS DECIMAL(10,2)) AS YoY_Change_Pct,
+    
+    -- Interpretation Column
+    CASE 
+        WHEN Year_Joined = 2021 THEN 'The Spike (Covid Liquidity)'
+        WHEN Year_Joined = 2022 AND Unicorn_Count < Prev_Year_Count THEN 'Market Correction'
+        ELSE 'Normal Trend'
+    END AS Market_Status
+FROM GrowthCalc
+ORDER BY Year_Joined;
+
+/*
+While the 77% drop in 2022 looks disastrous at first glance, a deeper look reveals that the market didn't crash below historical norms,
+it simply corrected the anomaly of 2021. I can equally say 2022 was a market correction rather than a collapse, as the ecosystem shed the 
+excess of the 2021 anomaly but stabilized at a 'new normal' that remains higher than the pre-pandemic baseline.
+*/
+
+-- 5.2 The "New Normal" Check (2022 vs Pre-Covid Average)
+-- Crucial Query: Is 2022 actually bad? Or is it still better than 2019?
+-- If 2022 > 2019, the market is growing. If 2022 < 2019, the market is shrinking.
+SELECT 
+    '2022 Actuals' AS Period, 
+    COUNT(*) AS Unicorn_Count 
+FROM #Unicorn_Analysis WHERE Year_Joined = 2022
+UNION ALL
+SELECT 
+    'Pre-Covid Average (2018-2020)' AS Period, 
+    COUNT(*) / 3 AS Unicorn_Count -- Divide by 3 years to get the average
+FROM #Unicorn_Analysis WHERE Year_Joined BETWEEN 2018 AND 2020;
+
+
+
+-- 5.3 Which Sectors "Crashed" the Hardest?
+-- Compare 2021 Peak vs 2022 Reality by Industry
+WITH IndustryStats AS (
+    SELECT 
+        Industry,
+        SUM(CASE WHEN Year_Joined = 2021 THEN 1 ELSE 0 END) AS Count_2021_Peak,
+        SUM(CASE WHEN Year_Joined = 2022 THEN 1 ELSE 0 END) AS Count_2022_Correction
+    FROM #Unicorn_Analysis
+    GROUP BY Industry
+)
+SELECT TOP 10
+    Industry,
+    Count_2021_Peak,
+    Count_2022_Correction,
+    -- Calculate the "Survival Rate"
+    Count_2022_Correction - Count_2021_Peak AS Net_Drop,
+    CASE 
+        WHEN Count_2021_Peak = 0 THEN 0 
+        ELSE CAST(ROUND((Count_2022_Correction - Count_2021_Peak) * 100.0 / Count_2021_Peak, 2) AS DECIMAL(10,2)) 
+    END AS Drop_Percentage
+FROM IndustryStats
+ORDER BY Drop_Percentage ASC; -- Sort by biggest losers (biggest negative %)
+
+/*
+The correction disproportionately punished pandemic-era favorites, with Consumer & Retail and Edtech 
+experiencing near-total collapses (>90% drop), while deep-tech sectors like Artificial Intelligence 
+demonstrated the strongest comparative resilience.
+
+The sustained activity in foundational sectors like Fintech and AI even after the correction, signals
+that unlike fleeting consumer trends, these technologies are not just a phase but have come to stay.
+*/
 ```
 ---
 
-## 🗂 Dataset
+### 🗂 Dataset
 
 | Column        | Description |
 |---------------|-------------|
@@ -333,325 +535,53 @@ ORDER BY Total_Valuation DESC;
 
 ---
 
-## 👨‍💻 Tools Used
+### 🚀 Business Impact & Strategic Value
 
-- **Microsoft SQL Server** — Data querying & analysis
-- **Power BI** — Visualization & dashboard (optional)
-- **Excel** — Data cleaning (Investor fields)
+This analysis transforms raw unicorn data into an actionable investment thesis, enabling stakeholders to move beyond "hype-based" investing and adopt a data-driven strategy focused on **Capital Efficiency** and **Valuation Arbitrage**.
 
----
+#### **1. Optimized Capital Allocation ("The Where")**
+* **📉 The Arbitrage Opportunity:** Identified a **"Geographical Arbitrage"** strategy by isolating Emerging Efficiency Hubs (e.g., **Austin**, **Seoul**) that offer mature innovation ecosystems at a **30-50% valuation discount** compared to saturated markets like San Francisco.
+* **💰 Business Outcome:** Shifting investment focus to these hubs allows funds to lower their "Cost of Entry" and acquire larger equity stakes without sacrificing ecosystem quality.
 
-## 🗂 EDA & Analysis Steps
-[`Unicorn companies.sql`](./Unicorn%20companies.sql) 
-### 1️⃣ General Overview
+#### **2. Risk Mitigation & Due Diligence ("The What")**
+* **⚖️ Burn vs. Efficiency:** Established a proprietary framework distinguishing between **"Capital Efficient"** outliers (e.g., Canva, Zapier; >100x ROI) and high-risk **"Cash Burners"** in capital-intensive sectors like Transportation (<2x ROI).
+* **🛡️ Business Outcome:** Serves as an early-warning system for Investment Committees to avoid over-leveraged sectors where capital requirements exceed potential value creation.
 
-- Total unicorn companies in dataset
-- Min, max, average valuations
-- Companies valued **above average**
+#### **3. Macro-Economic Forecasting ("The When")**
+* **🏦 The Liquidity Factor:** Decoupled the "2021 Unicorn Spike" from purely technological growth, attributing it correctly to **Liquidity Injection (Zero Interest Rate Policy)**.
+* **🔮 Business Outcome:** Helps strategists distinguish between organic secular trends (like AI adoption) and temporary cyclical bubbles, preventing capital deployment at the peak of inflated market cycles.
 
-```sql
---General overview of the Unicorn Companies
-SELECT 
-    COUNT(*) AS total_companies,
-    MIN(Valuation2) AS min_valuation,
-    MAX(Valuation2) AS max_valuation,
-    AVG(Valuation2) AS avg_valuation
-FROM Unicorn_C;
-```
-
-### 2️⃣ Geographical Insights
-
-- Top **countries** and **cities** by number of unicorns
-```sql
--- Top 10 Countries by Number of Unicorns
-SELECT Country, COUNT(*) AS unicorn_count
-FROM Unicorn_C
-GROUP BY Country
-ORDER BY unicorn_count DESC;
-
--- Top 10 Cities by Number of Unicorns
-SELECT City, Country, COUNT(*) AS unicorn_count
-FROM Unicorn_C
-GROUP BY City, Country
-ORDER BY unicorn_count DESC
-;
-```
-- % share of unicorns by country & city
-```sql
--- Percentage of unicorn in TOTAL by City and Country
-SELECT TOP 10 
-    City, 
-    Country, 
-    COUNT(*) AS unicorn_count,
-    ROUND(CAST(COUNT(*) AS FLOAT) / 
-          (SELECT COUNT(*) FROM Unicorn_C) * 100, 2) AS percentage_of_total
-FROM Unicorn_C
-GROUP BY City, Country
-ORDER BY unicorn_count DESC;
-```
-- Emerging **innovation hubs** for unicorn creation
-
-### 3️⃣ Industry Trends
-
-- Top industries globally and by continent
-```sql
--- Top Industries by Continent
-SELECT Continent, Industry, COUNT(*) AS industry_count
-FROM Unicorn_C
-GROUP BY Continent, Industry
-ORDER BY industry_count DESC;
-
--- By Country
-SELECT Country, Industry, COUNT(*) AS industry_count
-FROM Unicorn_C
-GROUP BY Country, Industry
-ORDER BY industry_count DESC;
-```
-- Industries driving the most unicorn creation
-```sql
--- Industries have the most or highest-valued unicorns
-SELECT 
-    Industry, 
-    COUNT(*) AS total_companies,
-    SUM(Valuation2) AS total_valuation
-FROM Unicorn_C
-GROUP BY Industry
-ORDER BY total_valuation DESC;
-```
-- Valuation growth patterns by industry (pre/post 2021)
-
-
-### 4️⃣ Investor Analysis
-
-- Top investors by number of unicorns funded
-```sql
---TOP 10 INVESTORS
-SELECT TOP 10 investor, COUNT(*) AS num_investments
-FROM (
-    SELECT [Investor 1] AS investor FROM Unicorn_C WHERE [Investor 1] IS NOT NULL
-    UNION ALL
-    SELECT [Investor 2] FROM Unicorn_C WHERE [Investor 2] IS NOT NULL
-    UNION ALL
-    SELECT [Investor 3] FROM Unicorn_C WHERE [Investor 3] IS NOT NULL
-    UNION ALL
-    SELECT [Investor 4] FROM Unicorn_C WHERE [Investor 4] IS NOT NULL
-) AS all_investors
-GROUP BY investor
-ORDER BY num_investments DESC
-```
-- Investor influence by country & city
-```sql
--- Cities and Countries with Top investors
-WITH invest AS (
-    SELECT [Investor 1] AS investor, City, Country FROM Unicorn_C WHERE [Investor 1] IS NOT NULL
-    UNION ALL
-    SELECT [Investor 2], City, Country FROM Unicorn_C WHERE [Investor 2] IS NOT NULL
-    UNION ALL
-    SELECT [Investor 3], City, Country FROM Unicorn_C WHERE [Investor 3] IS NOT NULL
-    UNION ALL
-    SELECT [Investor 4], City, Country FROM Unicorn_C WHERE [Investor 4] IS NOT NULL
-)
-
-SELECT TOP 10
-    investor,
-	City,
-    Country, 
-    COUNT(*) AS num_investments
-FROM invest
-GROUP BY investor, City, Country
-ORDER BY num_investments DESC;
-
-```
-
-### 5️⃣ Speed to Unicorn
-
-- **Years to unicorn** by company
-```sql
--- Time to Unicorn per Company
-SELECT 
-    Company, Industry,
-    YEAR([Date Joined]) - [Year Founded] AS years_to_unicorn
-FROM Unicorn_C
-ORDER BY years_to_unicorn ASC;
-
-```
-- Average time to unicorn by industry
-```sql
--- Average Time to Unicorn by Industry
-SELECT 
-    Industry,
-    ROUND(AVG((YEAR ([Date Joined]) - [Year Founded])), 0) AS Avg_Years_To_Unicorn
-FROM Unicorn_C
-WHERE [Year Founded] IS NOT NULL AND [Date Joined] IS NOT NULL
-GROUP BY Industry
-ORDER BY Avg_Years_To_Unicorn;
-```
-- Valuation-to-funding efficiency
-```sql
---how many dollars in valuation the company achieved for every $1 of investor funding
-SELECT 
-    Company, 
-    Valuation2, 
-    Funding2,
-    ROUND((Valuation2 / Funding2),1) AS valuation_to_funding_ratio
-FROM Unicorn_C
-WHERE Funding2 > 0
-ORDER BY valuation_to_funding_ratio DESC;
-```
-
-### 6️⃣ Temporal Trends
-
-- Yearly growth in unicorn creation
-```sql
--- Yearly Average Time to Unicorn
-SELECT 
-	YEAR ([Date Joined]) AS Year_joined,
-    ROUND(AVG((YEAR ([Date Joined]) - [Year Founded])), 0) AS Avg_Years_To_Unicorn
-FROM Unicorn_C
-WHERE [Year Founded] IS NOT NULL AND [Date Joined] IS NOT NULL
-GROUP BY YEAR ([Date Joined])
-ORDER BY Year_joined;
-```
-- **2021 spike** → COVID-driven digital transformation
-```sql
--- Number of unicorns per year across industries
-SELECT Industry, YEAR([Date Joined]) Year_joined, COUNT(*) AS industry_count
-FROM Unicorn_C
-WHERE Industry = 'Fintech'
-GROUP BY Industry, YEAR([Date Joined])
-ORDER BY YEAR([Date Joined]);
-
--- Unicorn Count by industry in 2021
-SELECT 
-    Industry,
-    COUNT(*) AS unicorns_in_year_2021
-FROM Unicorn_C
-WHERE Industry IS NOT NULL AND [Date Joined] IS NOT NULL AND YEAR([Date Joined])=2021
-GROUP BY Industry, YEAR([Date Joined])
-ORDER BY unicorns_in_year_2021 DESC;
-
--- Which investors contribute to the spike in unicorn companies in 2021
--- Top Investors Behind 2021 Unicorns Spike
-WITH investor_cte AS (
-    SELECT [Investor 1] AS Investor FROM Unicorn_C WHERE YEAR([Date Joined]) = 2021 AND [Investor 1] IS NOT NULL
-    UNION ALL
-    SELECT [Investor 2] FROM Unicorn_C WHERE YEAR([Date Joined]) = 2021 AND [Investor 2] IS NOT NULL
-    UNION ALL
-    SELECT [Investor 3] FROM Unicorn_C WHERE YEAR([Date Joined]) = 2021 AND [Investor 3] IS NOT NULL
-    UNION ALL
-    SELECT [Investor 4] FROM Unicorn_C WHERE YEAR([Date Joined]) = 2021 AND [Investor 4] IS NOT NULL
-)
-
-SELECT TOP 10 
-    Investor, 
-    COUNT(*) AS Unicorn_Count_2021
-FROM investor_cte
-GROUP BY Investor
-ORDER BY Unicorn_Count_2021 DESC;
-
--- =============================================
--- One major factor that contributed to the significant number of Unicorn in 2021 is the Global Pandemic (COVID-19) which restricted movement and instigated a lockdown
--- COVID-19 accelerated digital adoption in 2021, boosting Fintech and Internet Software & Services.
--- Lockdowns increased demand for digital payments, online banking, and remote tools,
--- leading to a surge in unicorns in these sectors due to rapid growth and investor interest.
-```
-- Pre-2021 trends (normalization)
-```sql
--- The significant emergence of Unicorn Companies in 2021 can be traced down to the COVID-19 pandemic. 
--- Events like the COVID-19 pandemic are not regular occurences, hence 2021 was excluded from this analysis helps avoid skewed data, 
--- which could introduce bias and misrepresent trends in industry investment. 
--- Focusing on 2012–2020 ensures consistency and reliability of insights.
-
-
--- Yearly Valuation Growth by Industry (Before 2021)
-WITH YearlyIndustryValuation AS (
-    SELECT 
-        Industry,
-        YEAR([Date Joined]) AS Year_Joined,
-        SUM(Valuation2) AS Total_Valuation
-    FROM Unicorn_C
-    WHERE 
-        [Date Joined] IS NOT NULL
-        AND Valuation2 IS NOT NULL
-        AND YEAR([Date Joined]) < 2021
-        AND Industry IS NOT NULL
-    GROUP BY Industry, YEAR([Date Joined])
-),
-
-GrowthCalculation AS (
-    SELECT 
-        Industry,
-        Year_Joined,
-        Total_Valuation,
-        LAG(Total_Valuation) OVER (PARTITION BY Industry ORDER BY Year_Joined) AS Prev_Valuation
-    FROM YearlyIndustryValuation
-)
-
-SELECT 
-    Industry,
-    Year_Joined,
-    Total_Valuation,
-    Prev_Valuation,
-    ROUND(
-        CASE 
-            WHEN Prev_Valuation IS NULL THEN NULL
-            ELSE ((Total_Valuation - Prev_Valuation) / Prev_Valuation) * 100
-        END, 2
-    ) AS YoY_Growth_Percentage
-FROM GrowthCalculation
-ORDER BY Industry, Year_Joined;
-```
-
-## 📈 Key Insights
-
-### 📌 High-level Summary
-
-- Total unicorn companies in dataset: **~1074**
-- Companies valued above average: **240**
-- Strong **upward trend** in unicorn creation until **2021**, followed by a normalization.
-- **US** leads globally with **562 unicorns**; **San Francisco** is the #1 city (148 unicorns).
-
-### 📌 Industry Growth Patterns
-
-| Industry         | Trend |
-|------------------|-------|
-| Fintech          | 🚀 Explosive growth (11% → 26.7%) |
-| AI/Big Data      | 📈 Strong growth |
-| SaaS             | 📈 Steady relevance |
-| HealthTech       | 🩺 COVID-driven peak in 2020, decline after |
-| Biotech          | 🧬 Similar COVID-driven spike |
-| E-Commerce       | 🛍️ Pandemic spike, returning to baseline |
-| Real Estate Tech | ⬇️ Decline in recent years |
-| Manufacturing    | ⬇️ Decline in VC appeal |
-| Web3/Blockchain  | 🚀 Hype-driven growth → stabilized |
-
-### 📌 Investor Insights
-
-- Top investors are concentrated in **US and China**.
-- Investor funding efficiency varies widely.
-- Certain investors consistently back **high-performing industries** (e.g., Fintech, AI).
+#### **4. Competitive Intelligence ("The Who")**
+* **👑 The Kingmaker Network:** Mapped the venture capital landscape to reveal that while large firms (Sequoia, Accel) dominate volume, specialized firms (e.g., **Threshold Ventures**) deliver superior per-deal returns (**1,006x ROI**).
+* **🤝 Business Outcome:** Informs "Co-Investment" strategies, suggesting that followership strategies should track **ROI Leaders** for yield rather than just following **Volume Leaders** for hype.
 
 ---
 
-## 🚀 Business Impact
+### 👨‍💻 Tools Used
 
-👍 Helps **VC firms** identify rising sectors and investor trends  
-👍 Informs **governments and accelerators** about emerging innovation hubs  
-👍 Supports **corporate strategy** for market entry and partnership decisions  
-👍 Highlights **COVID-19’s impact** on startup ecosystem  
-👍 Provides **timeline benchmarks** for founders (time to unicorn)  
+- **Microsoft SQL Server** — Data Cleaning, querying & analysis
+- **Power BI** — Visualization & dashboard
 
 ---
 
-## 📚 Project Files
+### 📚 Project Files
 
-- [`Unicorn companies.sql`](./Unicorn%20companies.sql) → Main SQL Analysis Script  
-- [`link to Unicorn companies dashboard`](https://app.powerbi.com/groups/me/reports/fbf97eb0-1b52-4837-9bf0-d491b775fd20?ctid=319a61c8-ee1e-4161-8f35-b9553227afd7&pbi_source=linkShare)
+- [`SQL Queries for analysis`](SQL_Query/SQL_query_for_Unicorn.sql) → Main SQL Analysis Script  
+- [`link to Unicorn companies dashboard`](https://app.powerbi.com/links/NDQXqXVVke?ctid=319a61c8-ee1e-4161-8f35-b9553227afd7&pbi_source=linkShare&bookmarkGuid=6aa14441-554f-4a07-b90e-b58e37eac958)
 
 ---
 
-## 💬 Contact
+### 🚀 What I'd Love to Try Next
 
-For questions or collaboration opportunities, feel free to connect!
+This dashboard was a great way to understand *what* happened in the market, but if I had more time, I’d love to dig into the *why* and *what’s next*. Here are three ideas I’m curious to explore:
+
+#### **1. Can we predict the next Unicorn?**
+I’m really interested in seeing if data can spot a winner before the market does. My next step would be to build a simple **Machine Learning model** (using Python) to see if early funding rounds and industry trends can actually predict a startup's future valuation.
+
+#### **2. The "Who Knows Who" Network**
+I noticed that big investors like Sequoia and Accel seem to show up in the best deals constantly. It would be fascinating to visualize this as a **Network Graph** to see the hidden relationships. Basically, I want to find out: does having the "right" connections guarantee success?
+
+#### **3. Is it real growth or just hype?**
+I suspect the 2021 boom was partly driven by news hype. I’d love to scrape news headlines from that year and run a **Sentiment Analysis**. It would be cool to test if a spike in positive news articles directly causes a spike in valuation—or if it's the other way around.
 
 ---
