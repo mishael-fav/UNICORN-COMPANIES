@@ -188,6 +188,134 @@ yield higher returns per startup than generalist commercial hubs.
 
 * **Web3 & Blockchain:** Experienced explosive growth from **1.9% (2020)** to **6.7% (2021)**, then stabilized at **5.4% (2022)**. This sector shows strong momentum but remains highly volatile compared to traditional tech.
 
+---
+
+## 🗂 Methodology / Code Snippet
+
+``` sql
+-- =================================================================================================
+-- STAGE 1: DATA ENGINEERING & PRE-PROCESSING 
+-- Create clean Temporary Tables 
+-- =================================================================================================
+
+-- A. Create Master Analytics Table (Cleans Valuation, Funding, and Dates)
+DROP TABLE IF EXISTS #Unicorn_Analysis;
+
+SELECT 
+    Company,
+    Industry,
+    City,
+    Country,
+    Continent,
+    [Year Founded],
+    [Date Joined],
+    YEAR([Date Joined]) AS Year_Joined,
+    
+    -- CLEANING VALUATION (to Valuation_Num)
+    CASE 
+        WHEN Valuation LIKE '%B' THEN CAST(REPLACE(REPLACE(Valuation, '$', ''), 'B', '') AS DECIMAL(15,2)) * 1000000000
+        WHEN Valuation LIKE '%M' THEN CAST(REPLACE(REPLACE(Valuation, '$', ''), 'M', '') AS DECIMAL(15,2)) * 1000000
+        ELSE 0 
+    END AS Valuation_Num,
+
+    -- CLEANING FUNDING (to Funding_Num)
+    CASE 
+        WHEN Funding LIKE '%Unknown%' THEN NULL 
+        WHEN Funding LIKE '%B' THEN CAST(REPLACE(REPLACE(Funding, '$', ''), 'B', '') AS DECIMAL(15,2)) * 1000000000
+        WHEN Funding LIKE '%M' THEN CAST(REPLACE(REPLACE(Funding, '$', ''), 'M', '') AS DECIMAL(15,2)) * 1000000
+        ELSE CAST(REPLACE(REPLACE(Funding, '$', ''), ',', '') AS DECIMAL(15,2)) 
+    END AS Funding_Num,
+
+    -- CALCULATED METRIC: Years to reach Unicorn Status
+    (YEAR([Date Joined]) - [Year Founded]) AS Years_To_Unicorn
+
+INTO #Unicorn_Analysis
+FROM Unicorn_Company
+WHERE [Date Joined] IS NOT NULL;
+
+
+-- B. Create Investor Long List (THE NEW STRING_SPLIT METHOD)
+DROP TABLE IF EXISTS #Investor_Long;
+
+SELECT DISTINCT 
+    Company, 
+    Industry, 
+    YEAR([Date Joined]) AS Year_Joined, 
+    TRIM(value) AS Investor 
+INTO #Investor_Long
+FROM Unicorn_Company
+CROSS APPLY STRING_SPLIT([Select Investors], ',') 
+WHERE LEN(TRIM(value)) > 0;
+
+-- Confirm the query
+SELECT Investor FROM #Investor_Long
+WHERE Company = 'Bytedance';
+/*
+NOTICE: I split the dataset into two distinct tables, `#Unicorn_Analysis` and `#Investor_Long`. This is in a bid to adhere to standard database design principles
+regarding "One-to-Many" relationships and, more critically, to prevent aggregation errors. Since a single company can have multiple investors,
+keeping them in the main table would require duplicating the company row for each investor, which causes financial metrics like Valuation to be 
+summed multiple times (e.g., counting a $100B company four times); separating them ensures that the main table maintains one row per company for 
+accurate financial reporting, while the secondary table handles the multiple investor relationships for network analysis.
+*/
+
+SELECT * FROM #Unicorn_Analysis
+SELECT * FROM #Investor_Long
+```
+```sql
+-- =================================================================================================
+-- STAGE 2: EXPLORATORY DATA ANALYSIS (General Trends)
+-- =================================================================================================
+
+-- 2.1 General Overview
+SELECT 
+    COUNT(*) AS Total_Companies,
+    MIN(Valuation_Num) AS Min_Valuation,
+    MAX(Valuation_Num) AS Max_Valuation,
+    MAX(Global_Avg) AS Avg_Valuation, -- We just pick the average value (it's the same for every row)
+    SUM(CASE WHEN Valuation_Num > Global_Avg THEN 1 ELSE 0 END) AS High_Value_Count
+FROM (
+    SELECT 
+        Valuation_Num,
+        AVG(Valuation_Num) OVER () AS Global_Avg -- Calculates the average instantly across all data
+    FROM #Unicorn_Analysis
+) AS Calc_Table;
+
+-- 2.2 Top 10 Countries (With Global Share %)
+SELECT TOP 10 
+    Country, 
+    COUNT(*) AS Unicorn_Count,
+    CAST(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM #Unicorn_Analysis) AS DECIMAL(5,2)) AS Global_Share_Pct
+FROM #Unicorn_Analysis
+GROUP BY Country
+ORDER BY Unicorn_Count DESC;
+
+-- 2.3 Top 10 Cities (Using DENSE_RANK to handle ties properly)
+WITH CityRank AS (
+    SELECT 
+        City, 
+        Country, 
+        COUNT(*) AS Unicorn_Count,
+        DENSE_RANK() OVER (ORDER BY COUNT(*) DESC) as Rank
+    FROM #Unicorn_Analysis
+    GROUP BY City, Country
+)
+SELECT * FROM CityRank WHERE Rank <= 10;
+
+-- 2.4 Industry Breakdown (Global)
+SELECT 
+    Industry, 
+    COUNT(*) AS Total_Companies,
+    SUM(Valuation_Num) AS Total_Valuation
+FROM #Unicorn_Analysis
+GROUP BY Industry
+ORDER BY Total_Valuation DESC;
+
+```
+```sql
+
+```
+---
+
 ## 🗂 Dataset
 
 | Column        | Description |
