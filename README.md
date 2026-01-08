@@ -111,7 +111,7 @@ signaling its role as the central hub of global unicorn capital.
 ### 🌎GEOGRAPHIC ARBITRAGE
 - Utilizing a **"Geographical Arbitrage"** framework, this dashboard analyzes the $3.71T global unicorn ecosystem to identify high-yield investment targets. By mapping Valuation against Volume, the analysis isolates **"Emerging Efficiency Hubs"** in the matrix's bottom-right quadrant—such as **Austin ($1.4B)** and **Hangzhou ($1.6B)**—that offer mature innovation at a discount compared to saturated "Premium" markets. While **North America** leads in overall stability as the most efficient continent (6.9x ratio), **South Korea** emerges as the global leader in capital efficiency with a massive **20x ROI multiple**, demonstrating that significant arbitrage opportunities exist outside of traditional, high-cost tech capitals.
 
-![CAPITAL EFFICIENCY](dashboard_pic/CAPITAL_EFFICIENCY.PNG)
+![CAPITAL EFFICIENCY](dashboard_pic/GEOGRAPHICAL_ARBITRAGE.PNG)
 
 #### SQL-QUERY Snippet
 ```sql
