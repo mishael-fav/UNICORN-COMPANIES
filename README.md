@@ -12,7 +12,7 @@ This Power BI project analyzes the landscape of "Unicorn" companies **(startups 
 
 ### 💰CAPITAL EFFICIENCY (The Moneyball Matrix)
 -This analysis shows a clear difference in how unicorns create value compared to the capital they raise.
-On one side, there are capital-efficient outliers like **Zapier** and **Canva**, which grew mostly through product-led adoption rather than big funding rounds. These companies achieved incredibly high valuation-to-funding ratios—sometimes near **4,000x**—highlighting how strong product-market fit can drive huge value without heavy capital.
+On one side, there are capital-efficient outliers like **Zapier** and **Canva**, which grew mostly through product-led adoption rather than big funding rounds. These companies achieved incredibly high valuation-to-funding ratios sometimes near **4,000x** highlighting how strong product-market fit can drive huge value without heavy capital.
 
 On the other side, there are capital-intensive “cash burners”, mainly in sectors like **Auto & Transportation**. Companies like **Magic Leap** and **Ola Cabs** raise more funding than their current valuations, with ratios **under 2x**, reflecting high operational costs and potential risks for investors.
 
