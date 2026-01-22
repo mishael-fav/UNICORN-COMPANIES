@@ -11,12 +11,12 @@ This Power BI project analyzes the landscape of "Unicorn" companies **(startups 
 #### A PowerBI dashboard used to visualize the analysis can be found here →[Link to Global Unicorn Arbitrage: Ecosystem Efficiency Dashboard](https://app.powerbi.com/links/NDQXqXVVke?ctid=319a61c8-ee1e-4161-8f35-b9553227afd7&pbi_source=linkShare&bookmarkGuid=6aa14441-554f-4a07-b90e-b58e37eac958)
 
 ### 💰CAPITAL EFFICIENCY (The Moneyball Matrix)
-- This analysis shows a clear difference in how unicorns create value compared to the capital they raise.
-  On one side, there are capital-efficient outliers like **Zapier** and **Canva**, which grew mostly through product-led adoption rather than big funding rounds. These companies achieved incredibly high valuation-to-funding ratios sometimes near **4,000x** highlighting how strong product-market fit can drive huge value without heavy capital.
-  
-  On the other side, there are capital-intensive “cash burners”, mainly in sectors like **Auto & Transportation**. Companies like **Magic Leap** and **Ola Cabs** raise more funding than their current valuations, with ratios **under 2x**, reflecting high operational costs and potential risks for investors.
-  
-  Overall, the data suggests that valuation alone doesn’t tell the full story. **Business model matters**: product-led, software-focused companies tend to create value more efficiently, while asset-heavy or infrastructure-dependent companies often need more capital to grow.
+This analysis shows a clear difference in how unicorns create value compared to the capital they raise.
+On one side, there are capital-efficient outliers like **Zapier** and **Canva**, which grew mostly through product-led adoption rather than big funding rounds. These companies achieved incredibly high valuation-to-funding ratios sometimes near **4,000x** highlighting how strong product-market fit can drive huge value without heavy capital.
+
+On the other side, there are capital-intensive “cash burners”, mainly in sectors like **Auto & Transportation**. Companies like **Magic Leap** and **Ola Cabs** raise more funding than their current valuations, with ratios **under 2x**, reflecting high operational costs and potential risks for investors.
+
+Overall, the data suggests that valuation alone doesn’t tell the full story. **Business model matters**: product-led, software-focused companies tend to create value more efficiently, while asset-heavy or infrastructure-dependent companies often need more capital to grow.
   
 ![CAPITAL EFFICIENCY](dashboard_pic/CAPITAL_EFFICIENCY.PNG)
 
