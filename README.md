@@ -131,7 +131,6 @@ When plotting valuation against volume, some locations stand out as high-value b
 
 At a broader level, **North America** shows the most consistent performance overall, with a strong balance between valuation and volume. However, **South Korea** stands out for capital efficiency, delivering a much higher return relative to the number of unicorns present. This suggests that some of the most efficient markets may exist outside the traditional, high-profile tech capitals.
 
-```
 
 ![CAPITAL EFFICIENCY](dashboard_pic/GEOGRAPHICAL_ARBITRAGE.PNG)
 
