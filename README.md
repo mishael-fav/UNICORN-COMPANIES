@@ -50,7 +50,7 @@ companies like Magic Leap and Ola Cabs to raise capital exceeding their current 
 ```
 
 ### ⚡Velocity Analysis: Speed & Value Creation
-- This velocity analysis examines how quickly companies across different sectors reach unicorn status and how efficiently they create value over time. One of the strongest patterns in the data is a noticeable rotation toward **Artificial Intelligence**, which consistently stands out on both speed and value creation metrics. On average, AI companies reach unicorn status in about **5.9 years** and generate value at a rate of roughly **$1.1B per year**, suggesting that the sector combines rapid scaling with strong investor confidence.
+This velocity analysis examines how quickly companies across different sectors reach unicorn status and how efficiently they create value over time. One of the strongest patterns in the data is a noticeable rotation toward **Artificial Intelligence**, which consistently stands out on both speed and value creation metrics. On average, AI companies reach unicorn status in about **5.9 years** and generate value at a rate of roughly **$1.1B per year**, suggesting that the sector combines rapid scaling with strong investor confidence.
 
 The **Auto & Transportation** sector shows a slightly different dynamic. While it is the fastest sector to reach a $1B valuation, doing so in approximately **5.03 years**, this speed appears to be driven largely by capital-intensive early funding rounds rather than organic value compounding. This indicates that time-to-unicorn alone does not fully capture long-term efficiency, especially in sectors that require heavy upfront investment.
 
@@ -88,12 +88,12 @@ while it produces the highest volume of unicorns (205), it creates value at less
 ```
 
 ### 👑THE "KINGMAKER" NETWORK
-- This analysis looks at how value and influence are distributed across the venture capital landscape by examining investor activity and the total valuation of the unicorns they’ve backed.
+This analysis looks at how value and influence are distributed across the venture capital landscape by examining investor activity and the total valuation of the unicorns they’ve backed.
 One of the clearest patterns that emerged from the data is a strong **power-law distribution**. Out of 1,247 active investors, **fewer than 1%** consistently appear in the high-volume, high-valuation segment, indicating that influence is heavily concentrated among a very small group of firms.
 
 Large, well-known players such as **Accel**, which has backed around 60 unicorns, and **Sequoia Capital China**, with a combined portfolio valuation of approximately **$473B**, dominate primarily through scale. Their position in the ecosystem is driven by broad market coverage and repeated exposure to high-growth companies rather than outsized returns from individual investments.
 
-However, the analysis also highlights a different and less obvious group of investors that perform strongly on **capital efficiency** rather than volume. These firms operate with fewer deals but generate significantly higher returns relative to the capital deployed. A notable example is **Threshold Ventures**, which stands out in the data with an estimated **1,006x return multiple**. This suggests that, while top-tier “kingmaker” firms control much of the deal flow and visibility, smaller and more specialized investors can outperform them on a per-investment basis..
+However, the analysis also highlights a different and less obvious group of investors that perform strongly on **capital efficiency** rather than volume. These firms operate with fewer deals but generate significantly higher returns relative to the capital deployed. A notable example is **Threshold Ventures**, which stands out in the data with an estimated **1,006x return multiple**. This suggests that, while top-tier “kingmaker” firms control much of the deal flow and visibility, smaller and more specialized investors can outperform them on a per-investment basis.
 
 ![CAPITAL EFFICIENCY](dashboard_pic/kingmaker_network.PNG)
 
@@ -125,12 +125,10 @@ signaling its role as the central hub of global unicorn capital.
 ```
 
 ### 🌎Global Ecosystem Analysis
-- This analysis looks at the global unicorn ecosystem (valued at **$3.71T**) by comparing total valuation against the number of unicorns across regions and cities. The goal is to understand where strong company valuations exist without the market being overly saturated.
+This analysis looks at the global unicorn ecosystem (valued at **$3.71T**) by comparing total valuation against the number of unicorns across regions and cities. The goal is to understand where strong company valuations exist without the market being overly saturated.
 
-**City-Level Analysis**
 When plotting valuation against volume, some locations stand out as high-value but less crowded. Cities like **Austin ($1.4B average valuation)** and **Hangzhou ($1.6B)** show strong valuations relative to the number of unicorns present. Compared to more saturated tech hubs, these locations appear to offer mature innovation at a lower “cost,” making them interesting outliers in the data.
 
-**Regional Efficiency**
 At a broader level, **North America** shows the most consistent performance overall, with a strong balance between valuation and volume. However, **South Korea** stands out for capital efficiency, delivering a much higher return relative to the number of unicorns present. This suggests that some of the most efficient markets may exist outside the traditional, high-profile tech capitals.
 
 ```
