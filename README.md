@@ -1,11 +1,8 @@
 # Global Unicorn Ecosystem Analytics | Venture Capital & Market Intelligence
 
 **Project type:** Independent data analytics portfolio
-
 **Reporting scope:** Historical global unicorn cohort snapshot (1,074 companies across 46 countries, through 2022 entries)
-
 **Business context:** Venture capital ecosystem screening across capital efficiency, sector growth velocity, geographic hubs, and investor syndicates
-
 **Primary tools:** Microsoft SQL Server (T-SQL) & Power BI (DAX, Power Query, interactive dashboards)
 
 [View the interactive Power BI dashboard](https://app.powerbi.com/links/NDQXqXVVke?ctid=319a61c8-ee1e-4161-8f35-b9553227afd7&pbi_source=linkShare&bookmarkGuid=6aa14441-554f-4a07-b90e-b58e37eac958) | [Explore the SQL analysis script](SQL_Query/SQL_query_for_Unicorn.sql)
