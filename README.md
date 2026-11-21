@@ -13,29 +13,17 @@
 ## Table of Contents
 
 * [1. Project Overview](#1-project-overview)
-
 * [2. Business Problem & Stakeholders](#2-business-problem--stakeholders)
-
 * [3. Dataset Overview & Tools](#3-dataset-overview--tools)
-
 * [4. Executive Summary](#4-executive-summary)
-
 * [5. Key Findings & Visualizations](#5-key-findings--visualizations)
-
   * [5.1 Capital Efficiency (The Moneyball Matrix)](#51-capital-efficiency-the-moneyball-matrix)
-
   * [5.2 Industry Growth Velocity (Sprinters vs. Marathon Builders)](#52-industry-growth-velocity-sprinters-vs-marathon-builders)
-
   * [5.3 Geographic Ecosystem Comparison (Volume vs. Valuation Quality)](#53-geographic-ecosystem-comparison-volume-vs-valuation-quality)
-
   * [5.4 Investor Syndicate Network (The "Kingmaker" Wiring)](#54-investor-syndicate-network-the-kingmaker-wiring)
-
   * [5.5 Market Structure & The 2021 Liquidity Anomaly](#55-market-structure--the-2021-liquidity-anomaly)
-
 * [6. Recommendations & Business Implications](#6-recommendations--business-implications)
-
 * [7. Limitations & Further Investigation](#7-limitations--further-investigation)
-
 * [8. Project Files & Deliverables](#8-project-files--deliverables)
 
 ## 1. Project Overview
