@@ -1,450 +1,279 @@
-# Global Unicorn Ecosystem Analysis: Valuation, Growth & Investor Networks
+# Global Unicorn Arbitrage: Ecosystem Efficiency Dashboard
 
-**An exploratory data analysis of global unicorn ecosystems, examining
-valuation, funding intensity, growth velocity, investor networks and
-geographic concentration.**
+**Comparing startup valuation, funding intensity, growth speed, investor networks and geographic concentration across global unicorn ecosystems.**
 
-**Project type:** Independent data analytics portfolio project\
-**Analytical approach:** Descriptive and exploratory business analysis\
-**Tools:** Microsoft SQL Server (T-SQL), Power BI\
-**Focus:** Descriptive market analysis and exploratory investment
-screening—not investment-return forecasting
+**Project type:** Independent data analytics portfolio project  
+**Dataset:** 1,074 unicorn companies, as reported in the original project analysis  
+**Tools:** Microsoft SQL Server (T-SQL), Power BI  
+**Focus:** Descriptive market analysis and exploratory investment screening—not investment-return forecasting
 
-[View the interactive Power BI
-dashboard](https://app.powerbi.com/links/NDQXqXVVke?ctid=319a61c8-ee1e-4161-8f35-b9553227afd7&pbi_source=linkShare&bookmarkGuid=6aa14441-554f-4a07-b90e-b58e37eac958)
-\| [Explore the SQL analysis](SQL_Query/SQL_query_for_Unicorn.sql)
+[View the interactive Power BI dashboard](https://app.powerbi.com/links/NDQXqXVVke?ctid=319a61c8-ee1e-4161-8f35-b9553227afd7&pbi_source=linkShare&bookmarkGuid=6aa14441-554f-4a07-b90e-b58e37eac958) | [Explore the SQL analysis](SQL_Query/SQL_query_for_Unicorn.sql)
 
-> **Executive takeaway:** Unicorn valuations, disclosed funding,
-> formation speed and investor relationships vary across industries and
-> locations. This analysis uses those differences to identify patterns
-> and candidates for further investigation. Its valuation-to-funding
-> ratio is a descriptive screening measure---not ROI, an investor return
-> multiple, or proof that a market is underpriced.
+> **Executive takeaway:** Unicorn valuations, funding requirements and formation rates vary substantially by industry, investor network and location. The analysis identifies candidates for further diligence, but valuation-based ratios are **not** realized investor returns, and high valuations do not establish that a market is inexpensive or investable.
 
 ## Table of Contents
 
 - [1. Project Overview](#1-project-overview)
 - [2. Business Problem & Analytical Questions](#2-business-problem--analytical-questions)
 - [3. Dataset Overview & Tools](#3-dataset-overview--tools)
-- [4. Executive Summary](#4-executive-summary)
-- [5. Key Findings & Visualizations](#5-key-findings--visualizations)
-  - [5.1 Capital Efficiency](#51-capital-efficiency)
-  - [5.2 Industry Growth Velocity](#52-industry-growth-velocity)
-  - [5.3 Investor Networks](#53-investor-networks)
-  - [5.4 Global Ecosystem Comparison](#54-global-ecosystem-comparison)
-  - [5.5 Market Structure & Historical Trends](#55-market-structure--historical-trends)
-- [6. Recommendations & Business Implications](#6-recommendations--business-implications)
-- [7. Limitations & Further Investigation](#7-limitations--further-investigation)
-- [8. Project Files & Deliverables](#8-project-files--deliverables)
-- [9. Potential Extensions](#9-potential-extensions)
+- [4. Analytical Framework & Methodology](#4-analytical-framework--methodology)
+- [5. Executive Summary](#5-executive-summary)
+- [6. Key Findings & Visualizations](#6-key-findings--visualizations)
+  - [6.1 Capital Efficiency](#61-capital-efficiency)
+  - [6.2 Industry Growth Velocity](#62-industry-growth-velocity)
+  - [6.3 Investor Networks](#63-investor-networks)
+  - [6.4 Global Ecosystem Comparison](#64-global-ecosystem-comparison)
+  - [6.5 Market Structure & Historical Trends](#65-market-structure--historical-trends)
+- [7. Recommendations & Business Implications](#7-recommendations--business-implications)
+- [8. Limitations & Further Investigation](#8-limitations--further-investigation)
+- [9. Project Files & Deliverables](#9-project-files--deliverables)
+- [10. Potential Extensions](#10-potential-extensions)
 
-------------------------------------------------------------------------
+---
 
 ## 1. Project Overview
 
-A unicorn is a privately held company with a reported valuation of at
-least **US\$1 billion**. This project examines a snapshot of global
-unicorn companies to understand how reported valuation, disclosed
-funding, time to unicorn status, investor relationships and geographic
-distribution differ across the observed ecosystem.
+A unicorn is a privately held company with a reported valuation of at least **US$1 billion**. This project examines a snapshot of global unicorn companies and asks how their valuation, disclosed funding, time to unicorn status, investor relationships and geographic distribution differ.
 
-The analysis compares observed unicorn companies across valuation, disclosed funding, time to unicorn status, investor participation and geographic distribution. It is a descriptive screening exercise: differences between markets are treated as evidence for further investigation, not proof of mispricing or guaranteed investment opportunity.
+The **“ecosystem arbitrage”** concept is used as an exploratory comparison of startup hubs, not proof of an executable arbitrage opportunity. The dashboard distinguishes markets with relatively high average unicorn valuations or lower company counts from larger, more concentrated hubs. These are screening signals that warrant additional research, not measures of entry price or expected investment returns.
 
-**Primary deliverable:** A Power BI dashboard supported by SQL Server
-data preparation, company-level analysis and a separate
-investor-relationship table.
+**Deliverable:** A Power BI dashboard supported by SQL Server preprocessing, descriptive metrics and network queries.
 
 [Back to Table of Contents](#table-of-contents)
 
 ## 2. Business Problem & Analytical Questions
 
-Headline unicorn counts and aggregate valuations do not, on their own, show how efficiently companies reached unicorn status, how disclosed funding relates to reported valuation, or how investor relationships are distributed. The project therefore compares companies, industries and locations using a consistent set of measurable indicators.
+Headline unicorn counts and valuations alone offer an incomplete view of venture ecosystems. A useful screening exercise also considers capital raised, the time taken to reach unicorn status, industry mix, concentration and the investor relationships behind prominent companies.
 
-**Business problem:** Identify measurable differences in reported valuation, disclosed funding, formation time, investor participation and geographic concentration across the observed unicorn population, then determine which differences warrant deeper company- or market-level research.
+This analysis addresses five questions:
 
-The analysis is organised around five questions and their corresponding measures:
+1. **Capital intensity:** Which unicorns have high or low reported valuation relative to disclosed funding?
+2. **Growth velocity:** Which industries have shorter observed times from founding to unicorn status?
+3. **Investor concentration:** Which investors and co-investor pairs appear most frequently in the selected unicorn sample?
+4. **Geographic structure:** How do unicorn counts and average valuations vary across countries and cities?
+5. **Historical change:** How did unicorn formation and industry composition change around the 2021 peak and the subsequent 2022 slowdown?
 
-1. **Valuation relative to disclosed funding:** What is the distribution of `Capital_Efficiency_Ratio = Valuation_Num / Funding_Num` among companies with positive, known funding? Report the median, mean, quartiles, minimum and maximum, plus the number and percentage of companies in each `Efficiency_Category`.
-2. **Time to unicorn status:** What are the median and mean `Years_To_Unicorn = Year_Joined − Year Founded` by industry, and how many companies contribute to each estimate? Exclude zero or negative intervals from duration statistics and report the excluded count separately.
-3. **Investor participation and co-investment:** How many distinct companies are associated with each investor, what share of all represented companies does that count equal, and how many distinct companies are shared by each investor pair? Count distinct `Company_ID` relationships, not bridge-table rows as companies.
-4. **Geographic concentration and valuation:** What are the unicorn count, share of the observed population, median valuation and mean valuation by continent, country and city? Apply and disclose a minimum company-count threshold before ranking small geographic groups.
-5. **Formation trends over time:** How many companies joined the unicorn population in each `Year_Joined`, what percentage of all dated records does each year represent, and how did industry shares change across cohorts?
-
-**Core KPI definitions:**
-
-| KPI | Calculation |
-|---|---|
-| Unicorn count | Distinct `Company_ID` count |
-| Valuation-to-funding ratio | `Valuation_Num / Funding_Num`, where funding is positive and known |
-| Efficiency-category share | Companies in category ÷ companies with a classified category × 100 |
-| Years to unicorn | `Year_Joined − Year Founded` |
-| Investor reach | Distinct companies linked to investor ÷ distinct companies in scope × 100 |
-| Geographic share | Distinct companies in location ÷ distinct companies in scope × 100 |
-| Annual unicorn-entry share | Companies with `Year_Joined` in year ÷ companies with a valid entry year × 100 |
-
-These metrics describe the records available in the dataset. They do not measure realised investment returns, profitability, startup failure rates, ownership-adjusted investor value or causal effects.
+The intended audience is an analyst or investment-research team building an initial screening shortlist. The project does **not** estimate actual fund performance, private-company fair value or investment eligibility.
 
 [Back to Table of Contents](#table-of-contents)
 
 ## 3. Dataset Overview & Tools
 
-The documented analysis contains **1,074 unicorn company records**. The final CSV exports should be counted at refresh time before this figure is treated as the current dashboard population. The source dataset download URL, extraction date and refresh date are not established in the project documentation.
+The original project documentation describes a dataset of **1,074 global unicorn companies**. The source README does not identify a verifiable download URL, extraction date or last-refresh date; these should be added when the underlying dataset provenance is confirmed.
 
-### 3.1 Relational data structure
+| Field | Role in the analysis |
+|---|---|
+| Company | Company identifier/name |
+| Industry | Sector classification |
+| Valuation | Reported company valuation (original data stored as currency strings) |
+| Funding | Reported total funding raised (may include unknown values) |
+| Year Founded | Formation year |
+| Date Joined | Date of attaining reported unicorn status |
+| Country, City, Continent | Geographic segmentation |
+| Select Investors | Comma-separated list of selected investors |
 
-The model separates company-level attributes from the many-to-many investor listing by storing investor participation in a bridge table. The company fact table has one record per `Company_ID`; the bridge table has one record per distinct company-investor pair.
+**Software and methods**
 
-```mermaid
-erDiagram
-    FACT_UNICORN ||--o{ BRIDGE_INVESTORS : "Company_ID"
-    FACT_UNICORN {
-        string Company_ID PK
-        string Company
-        string Industry
-        string City
-        string Country
-        string Continent
-        int Year_Founded
-        date Date_Joined
-        int Year_Joined
-        decimal Valuation_Num
-        decimal Funding_Num
-        int Years_To_Unicorn
-        decimal Capital_Efficiency_Ratio
-        string Efficiency_Category
-    }
-    BRIDGE_INVESTORS {
-        string Company_ID FK
-        string Investor
-        string Company
-        string Industry
-        int Year_Joined
-    }
+| Tool | Actual role |
+|---|---|
+| Microsoft SQL Server (T-SQL) | Currency transformations, data shaping, descriptive aggregation, ranking, time comparisons and investor co-occurrence analysis |
+| Power BI | Visual exploration of capital efficiency, velocity, investor activity and geography |
+
+**Data-grain decision:** The company-level analytical table holds one row per unicorn for valuation and industry measures. A separate investor-long table represents the **company × investor** relationship. Investor joins must be handled carefully because they can multiply company valuations when summed across investors.
+
+[Back to Table of Contents](#table-of-contents)
+
+## 4. Analytical Framework & Methodology
+
+The workflow follows a reporting structure similar to a business diagnostic project: **Validate → Transform → Segment → Compare → Interpret**.
+
+1. **Validate:** Inspect required company, date, industry and financial fields; identify missing funding and invalid conversions.
+2. **Transform:** Convert valuation/funding currency strings into numeric USD amounts and derive founding-to-unicorn intervals.
+3. **Segment:** Group companies by industry, geography and reported investor relationships.
+4. **Compare:** Calculate valuation-to-funding ratios, time-to-unicorn summaries, counts, ranks and cohort trends.
+5. **Interpret:** Treat descriptive patterns as screening evidence, state limitations and identify follow-up diligence questions.
+
+### Key measures and definitions
+
+| Measure | Calculation / interpretation |
+|---|---|
+| Valuation-to-funding ratio | `reported_valuation_usd / reported_funding_usd`, for positive known funding; **not realized ROI** |
+| Years to unicorn | `YEAR(date_joined) − year_founded`; a year-granularity approximation, not an exact duration |
+| Value-velocity proxy | `reported_valuation_usd / years_to_unicorn`, excluding zero or invalid intervals; **not annual valuation growth** |
+| Unicorn count | Number of companies in each segment of this snapshot |
+| Average reported valuation | Mean valuation within a specified city/industry, sensitive to outliers and sample size |
+| Co-investment frequency | Number of distinct companies shared by an investor pair |
+
+The original SQL performs these calculations with temporary tables and aggregate queries. The complete script is available in [SQL_Query/SQL_query_for_Unicorn.sql](SQL_Query/SQL_query_for_Unicorn.sql).
+
+**Selected example — valuation-to-funding screening metric:**
+
+```sql
+SELECT
+    Company,
+    Industry,
+    Valuation_Num,
+    Funding_Num,
+    ROUND(Valuation_Num / NULLIF(Funding_Num, 0), 2)
+        AS Valuation_To_Funding_Ratio
+FROM #Unicorn_Analysis
+WHERE Funding_Num IS NOT NULL
+  AND Funding_Num > 0
+ORDER BY Valuation_To_Funding_Ratio DESC;
 ```
 
-`Company_ID` is the join key. It is constructed from the trimmed, uppercased company name and industry; it is a dataset-specific matching key, not a permanent legal-entity identifier. The diagram shows the intended one-to-many relationship: one company record may connect to multiple investor records.
-
-### 3.2 Data dictionary
-
-The full field-level dictionary documents each output table, field definition, analytical role, expected data type, derivation and handling of missing or invalid values.
-
-**[Open the full data dictionary](Global_Unicorn_Data_Dictionary.md)**
-
-### 3.3 Tools and roles
-
-  -----------------------------------------------------------------------
-  Tool                                Role
-  ----------------------------------- -----------------------------------
-  Microsoft SQL Server (T-SQL)        Data preparation, currency
-                                      conversion, key construction,
-                                      date-derived fields, investor-list
-                                      normalisation, metric calculation
-                                      and analytical queries
-
-  Power Query                         Importing the two CSV outputs and
-                                      applying/confirming data types
-
-  Power BI                            Interactive exploration, KPI
-                                      reporting, segmentation and
-                                      dashboard presentation
-  -----------------------------------------------------------------------
+This metric compares two reported amounts. It does not account for ownership percentages, investment dates, dilution, exits, cash returned or investment terms.
 
 [Back to Table of Contents](#table-of-contents)
 
-## 4. Executive Summary
+## 5. Executive Summary
 
-The documented analysis contains **1,074 unicorn company records** with an estimated combined reported valuation of approximately **$3.71 trillion**. The geographic distribution is concentrated: **562 companies are recorded in the United States**, including **148 in San Francisco** and **103 in New York**. The largest recorded entry cohort is **2021, with 520 companies**.
+The project's reported sample contains **1,074 unicorn companies**, with an estimated combined reported valuation of **$3.71 trillion**. The original analysis describes a highly concentrated market: **562 unicorns in the United States**, **148 in San Francisco** and **103 in New York**. It also identifies **520 companies with a recorded unicorn entry year of 2021**, making that year prominent in the dataset.
 
-Industry comparisons report an average founding-to-unicorn interval of approximately **5.9 years for Artificial Intelligence** and **5.03 years for Auto & Transportation**. Internet Software accounts for **205 companies** in the analysed population. The valuation-to-funding ratio varies widely across companies, while investor co-occurrence records show repeated relationships among selected venture firms.
+Across industries, the original analysis reports a mean **5.9-year founding-to-unicorn interval** for Artificial Intelligence and **5.03 years** for Auto & Transportation. It reports **205 Internet Software unicorns**, reflecting a large sector presence in the selected data. Company-level valuation-to-funding ratios vary widely, while investor co-occurrence analysis highlights concentration among well-connected venture firms.
 
-These figures describe the documented dataset and should be reconciled against the final CSV exports before being presented as live dashboard KPIs. The company-level and investor-relationship tables are separated through `Company_ID`, and funding records that are missing or non-positive are kept outside the classified valuation-to-funding ratio.
-
-**Overall conclusion:** The analysis identifies measurable differences in valuation, funding, formation time, investor participation and geography that can guide further research. It does not establish realised investor returns, startup profitability, fair entry valuations, causal drivers of the 2021 increase or a uniquely optimal location for venture-capital deployment.
+**Overall conclusion:** These patterns are useful for identifying *where to investigate further*, but the project cannot infer realized investor returns, startup profitability, entry valuations, causal drivers of the 2021 spike, or a uniquely optimal city for venture-capital deployment.
 
 [Back to Table of Contents](#table-of-contents)
 
-## 5. Key Findings & Visualizations
+## 6. Key Findings & Visualizations
 
-The findings connect each dashboard view to a measurable business question and explain what the observed metrics can—and cannot—support.
+### 6.1 Capital Efficiency
 
-### 5.1 Capital Efficiency
+The valuation-to-funding comparison highlights substantial variation in reported company valuations relative to disclosed funding. The original analysis highlights companies such as **Zapier** and **Canva** among high-ratio observations, while **Magic Leap** and **Ola Cabs** appear in a lower-ratio group. Some reported outliers approach a **4,000×** valuation-to-funding ratio in the source analysis.
 
-**Business question:** Which companies have high or low reported
-valuation relative to disclosed funding, and what should an analyst
-investigate about those differences?
+A high ratio may warrant investigation of business model, funding history and valuation timing; it does **not** demonstrate that the company generated a 4,000× investor return or achieved its valuation without substantial capital. Likewise, a ratio below 2× does not by itself establish cash burn or value destruction.
 
 ![Capital efficiency dashboard](dashboard_pic/CAPITAL_EFFICIENCY.PNG)
 
-**Business implication:** The valuation-to-funding ratio is useful for identifying companies whose reported valuation is high or low relative to the funding disclosed in the dataset. The documented analysis identified examples such as **Zapier** and **Canva** among high-ratio observations, while **Magic Leap** and **Ola Cabs** appeared among lower-ratio observations; some observations approached **4,000×**. These are screening signals, not return multiples. A high ratio can arise from incomplete funding disclosure, differences in the dates of valuation and funding records, or a company that has raised relatively little capital. A low ratio does not establish cash burn or value destruction. For a defensible comparison, report the number of companies with positive known funding, the median and interquartile range of the ratio, and the count and percentage in each category. The category thresholds are project-defined: `Elite Efficiency (10x+)` for ratios at least 10, `Cash Burner (<2x)` for ratios below 2, `Standard Growth` for ratios from 2 to below 10, and `Not Classified` where funding is missing or non-positive. The label `Cash Burner` is a screening label only; the ratio does not measure cash burn.
+**Interpretation:** Reported valuation relative to funding is a screening proxy for apparent capital intensity, not a profitability or ROI measure.
+
+**Business implication:** Analysts can use the ratio to create diligence lists, but should reconcile dates and funding coverage before comparing companies or industries.
+
+**Recommended action:** Validate funding disclosures, business models, financing terms and valuation dates for extreme outliers.
 
 [Back to Table of Contents](#table-of-contents)
 
-### 5.2 Industry Growth Velocity
+### 6.2 Industry Growth Velocity
 
-**Business question:** How does the observed time from founding to
-unicorn status differ across industries?
+The original analysis reports an average time to unicorn status of approximately **5.9 years for Artificial Intelligence** and **5.03 years for Auto & Transportation**. Internet Software has **205 unicorns** in the selected sample and a reported value-velocity proxy of approximately **$500 million per year**, compared with approximately **$1.1 billion per year** for AI.
 
-![Industry growth velocity
-dashboard](dashboard_pic/high_growth_velocity.PNG)
+These statistics describe companies that *have already reached unicorn status*. They do not capture startups that never did, and a lower time-to-unicorn interval cannot independently establish stronger fundamentals or lower investment risk. The value-velocity proxy divides a reported valuation by years since founding; it is not an observed yearly return series.
 
-**Business implication:** The documented analysis reports mean time-to-unicorn estimates of approximately **5.9 years for Artificial Intelligence** and **5.03 years for Auto & Transportation**. It also reports **205 Internet Software companies** and value-velocity proxies of approximately **$500 million per year** for Internet Software and **$1.1 billion per year** for AI. These figures can help identify sectors for closer examination, but the number of companies in each sector and the distribution of their durations must accompany the averages. `Years_To_Unicorn` is calculated as `Year_Joined − Year Founded`, so it is a year-level approximation rather than an exact elapsed duration. The value-velocity proxy divides reported valuation by years from founding to unicorn status; it is not annual valuation growth or an investment return. The sample includes companies that reached unicorn status and excludes unsuccessful or non-unicorn startups, so the figures cannot establish the probability that a startup in one sector will succeed faster than a startup in another.
+![Industry growth velocity dashboard](dashboard_pic/high_growth_velocity.PNG)
+
+**Interpretation:** Industries differ in how rapidly companies in this unicorn sample reached the $1 billion threshold.
+
+**Business implication:** Use the sector comparisons to prioritise further review of funding requirements and business-model characteristics, not as stand-alone forecasts.
+
+**Recommended action:** Compare cohort years, funding intensity and sample sizes, then test whether findings are robust to extreme valuations.
 
 [Back to Table of Contents](#table-of-contents)
 
-### 5.3 Investor Networks
+### 6.3 Investor Networks
 
-**Business question:** Which investors appear frequently in the unicorn
-sample, and which investor pairs repeatedly appear together?
+The original project reports **1,247 investor names** in the analysed network, with relatively few names concentrated among investors linked to many unicorn companies. It highlights **Accel** (approximately **60** unicorn investments in the selected records) and **Sequoia Capital China** (approximately **$473 billion** in aggregate *portfolio-company* valuation, as reported in the project).
+
+The investor-pair query counts companies shared by two named investors. The source analysis reports **nine shared unicorn investments** for Sequoia China and Tencent, and **six** for Accel and Y Combinator. These are **co-occurrence counts**, not evidence of formal syndicate leadership or investment-performance superiority.
 
 ![Investor network dashboard](dashboard_pic/kingmaker_network.PNG)
 
-**Business implication:** Investor participation counts and co-investment frequencies can identify firms and relationships that recur across the observed unicorn population. The documented analysis reports approximately **1,247 investor names**, around **60 company relationships** associated with Accel, and approximately **$473 billion** in aggregate reported valuation across companies associated with Sequoia Capital China. It also reports nine shared companies for Sequoia China and Tencent, and six for Accel and Y Combinator. These measures describe recorded links, not investor ownership, capital deployed or investment performance. In particular, the aggregate valuation of companies associated with an investor is not the value owned by that investor. The bridge table contains one row per distinct company-investor relationship; therefore company counts must use distinct `Company_ID`, and company valuation must be aggregated from the company-level fact table rather than summed across bridge rows. Investor-name standardisation and source coverage should be checked before treating network rankings as comprehensive.
+**Interpretation:** Investor relationships are unevenly distributed across the selected unicorn records, and some pairs co-occur repeatedly.
+
+**Business implication:** The network can support due-diligence mapping and identification of commonly co-invested companies. Summed company valuations are not the value owned by the investor or a measure of fund return.
+
+**Recommended action:** Standardise investor names, check incomplete investor lists and distinguish investor-company exposure from actual ownership and investment returns.
 
 [Back to Table of Contents](#table-of-contents)
 
-### 5.4 Global Ecosystem Comparison
+### 6.4 Global Ecosystem Comparison
 
-**Business question:** How do unicorn counts and average reported
-valuations vary across countries and cities, and which locations merit
-further research?
+The analysis compares unicorn counts and reported average valuations by country and city. It describes a global unicorn sample valued at approximately **$3.71 trillion** and identifies both high-volume hubs and smaller markets with relatively high average company valuations. The source commentary references **Austin, Hangzhou, Stockholm, Shenzhen and Boston** among cities worth closer examination.
 
-![Global ecosystem dashboard](dashboard_pic/GEOGRAPHIC_ECOSYSTEM.PNG)
+The underlying SQL ranks cities by **average reported unicorn valuation**, with a minimum observed count filter (`HAVING COUNT(*) > 2`). This can surface high-valuation outliers but does **not** measure a city's actual startup entry prices, VC deal competition or the cost of acquiring equity. Results for low-count cities can also be unstable.
 
-**Business implication:** Geographic counts and valuation distributions help distinguish large startup hubs from locations with smaller observed populations and different valuation profiles. The documented analysis identifies **Austin, Hangzhou, Stockholm, Shenzhen and Boston** as locations for closer examination and reports a global sample valuation of approximately **$3.71 trillion**. For each geography, the dashboard should present distinct company count, share of the analysed population, median valuation and mean valuation together; a mean without its sample size can be misleading where a small number of companies have unusually high valuations. The analysis does not measure actual deal entry prices, funding availability, liquidity or exit performance. Consequently, a high average valuation or low company count cannot establish that a location is underpriced or offers a superior investment opportunity. Geographic comparisons should be treated as a shortlist for additional market research, not as a ranking of investment destinations.
+![Global ecosystem dashboard](dashboard_pic/GEOGRAPHICAL_ARBITRAGE.PNG)
 
-[Back to Table of Contents](#table-of-contents)
+**Interpretation:** Counts and average valuations highlight geographic concentration and variation within this sample.
 
-### 5.5 Market Structure & Historical Trends
+**Business implication:** Geographic comparisons can help build a research shortlist, but the term *arbitrage* remains a framing device rather than a verified mispricing opportunity.
 
-**Business question:** How did unicorn formation change over time, and
-how concentrated is the observed market by geography and industry?
-
-**Business implication:** The documented analysis records **520 unicorn entries in 2021**, followed by fewer entries in 2022, and **562 US companies** in the 1,074-record population, including **148 in San Francisco** and **103 in New York**. These figures describe the timing and concentration of companies in the observed unicorn population. Annual entry counts should be accompanied by each year's share of all records with a valid `Year_Joined`; geographic concentration should be expressed as both company counts and population shares. The 2021 peak and subsequent decline are descriptive patterns. Attributing them to interest rates, pandemic-related behaviour or a market correction requires external economic and financing evidence. The figures do not measure total venture investment, startup profitability or the number of startups created in each year.
+**Recommended action:** Add funding-stage-adjusted entry valuations, funding volumes, exit performance and consistent city-level coverage before ranking investment destinations.
 
 [Back to Table of Contents](#table-of-contents)
 
-## 6. Recommendations & Business Implications
+### 6.5 Market Structure & Historical Trends
 
-The results support **research prioritisation**, not immediate investment execution. The recommendations connect the dashboard findings to the next evidence-gathering steps.
+The original analysis highlights **520 unicorn entries in 2021**, alongside a subsequent decrease in new entries in 2022. It also reports **562 US unicorns** within the 1,074-company sample, including **148 in San Francisco** and **103 in New York**. The project examines industry composition and pre-2021 growth patterns through additional SQL queries.
 
-  ----------------------------------------------------------------------------
-  Priority          Analytical opportunity Recommended       Evidence needed
-                                           action            before stronger
-                                                             conclusions
-  ----------------- ---------------------- ----------------- -----------------
-  High              Extreme                Verify funding    Consistent, dated
-                    valuation-to-funding   completeness,     funding and
-                    ratios                 valuation dates,  valuation records
-                                           company
-                                           financials and
-                                           ownership
-                                           structure
+The 2021 spike and subsequent slowdown are descriptive cohort patterns. Attributing them to low interest rates, pandemic behaviour or market correction would require external economic and financing evidence. Similarly, shifts in the share of newly created unicorns should not automatically be interpreted as changes in total venture investment or industry profitability.
 
-  High              Fast unicorn formation Review            Comparable
-                    in selected industries industry/cohort   sector-level
-                                           sample sizes,     measures and
-                                           survivorship bias sensitivity
-                                           and capital needs checks
+**Interpretation:** The timing and geographic concentration of unicorn formation are distinctive features of the analysed snapshot.
 
-  High              Concentrated investor  Resolve investor  Reliable investor
-                    networks               aliases and       entity matching
-                                           validate          and complete
-                                           co-investment     round histories
-                                           pairs against
-                                           external records
-
-  Medium            High-valuation but     Compare actual    Stage-adjusted
-                    lower-count cities     deal entry        investment terms
-                                           prices, stages,   and consistent
-                                           liquidity and     geographic
-                                           exits             coverage
-
-  Ongoing           Historic unicorn waves Monitor cohorts   Dated snapshots
-                                           against           and external
-                                           contemporaneous   contextual data
-                                           VC activity and
-                                           macroeconomic
-                                           indicators
-  ----------------------------------------------------------------------------
-
-### Business implications
-
-1.  **For investment research:** Treat the dashboard as a first-stage
-    screening tool. Any shortlist should proceed to company-level
-    financial, market, governance and financing diligence.
-2.  **For ecosystem analysis:** Compare both company counts and
-    valuation distributions. Averages alone can conceal skewness and
-    small-sample effects.
-3.  **For investor-network research:** Separate the number of companies
-    associated with an investor from ownership, capital deployed and
-    realised returns.
-4.  **For sector comparison:** Review the underlying company mix and
-    cohort years before interpreting formation speed as a structural
-    industry advantage.
-5.  **For ongoing monitoring:** Refresh the source data and document the
-    extraction date so that dashboard changes can be distinguished from
-    changes in data coverage.
-
-**Expected value:** A better-documented research shortlist, more
-transparent screening criteria and fewer misleading comparisons. No
-investment return, cost saving or causal impact has been established by
-this project.
+**Recommended action:** Re-run the cohort analysis on a dated, consistently maintained source and compare results with venture-capital funding and macroeconomic indicators.
 
 [Back to Table of Contents](#table-of-contents)
 
-## 7. Limitations & Further Investigation
+## 7. Recommendations & Business Implications
 
-1.  **Dataset provenance and timing:** The project documentation
-    does not establish a verifiable source URL, extraction date or
-    refresh date. Historical figures in this README should be treated as
-    documented results until reconciled against the current CSV
-    exports.
-2.  **Selection and survivorship bias:** Unicorn-only records exclude
-    most startups that did not reach a billion-dollar valuation. Results
-    cannot be generalised to all funded startups or used to estimate the
-    probability of becoming a unicorn.
-3.  **Reported valuations are not realised returns:** Company valuations
-    and cumulative funding do not establish ROI, cash flows,
-    dilution-adjusted multiples, ownership value or fund-level
-    performance.
-4.  **Valuation/funding comparability:** Funding may be incomplete or
-    not aligned with valuation dates. Missing and zero funding require
-    explicit handling. `Not Classified` prevents invalid denominators
-    from being presented as ordinary ratio observations.
-5.  **Capital-efficiency categories:** The thresholds are analytical
-    choices for screening. They are not universal venture-capital
-    standards and should not be interpreted as ratings of company
-    quality.
-6.  **Growth-velocity measurement:** `Year_Joined − Year Founded` is a
-    year-level approximation rather than an exact duration. Negative or
-    zero intervals require investigation or exclusion from
-    duration-based calculations. The value-velocity proxy is not a
-    measured annual growth rate.
-7.  **Investor attribution:** Investor lists may be partial or
-    inconsistent. Assigning an entire company's valuation to every named
-    investor double-counts company value and cannot estimate ownership
-    value.
-8.  **Geographic conclusions:** Average valuations and counts do not
-    measure deal access, entry price, liquidity or geographic investment
-    ecosystem comparison. Small groups are especially sensitive to individual
-    observations.
-9.  **Macroeconomic explanations:** The analysis describes the 2021
-    spike and 2022 slowdown but does not independently establish their
-    causes.
-10. **Identifier limitations:** `Company_ID`, constructed from
-    normalised company name and industry, is a dataset key. It is not a
-    verified global legal-entity identifier; name or industry changes
-    may affect matching.
-11. **Power BI model integrity:** Company-level measures must be
-    calculated from the company fact table. Investor bridge rows
-    represent relationships and should not be treated as additional
-    unicorn companies.
+The results support **research prioritisation**, not immediate investment execution.
+
+| Priority | Analytical opportunity | Recommended action | Success criterion |
+|---|---|---|---|
+| High | Extreme valuation-to-funding ratios | Verify funding completeness, valuation dates, company financials and ownership structure | Ratios supported by consistent, dated records |
+| High | Fast unicorn formation in selected industries | Review industry/cohort sample sizes, survival bias and capital needs | Comparable sector-level metrics with sensitivity checks |
+| High | Concentrated investor networks | Resolve investor aliases; validate co-investment pairs against external records | Reliable entity-matched network statistics |
+| Medium | High-valuation but lower-count cities | Compare actual deal entry prices, stages, liquidity and exits | Geography comparisons informed by investment terms, not averages alone |
+| Ongoing | Historic unicorn waves | Monitor cohorts against contemporaneous VC activity and macro indicators | Dated updates and clearly separated observation vs. interpretation |
+
+**Expected value:** A better-documented shortlist for additional research, more transparent screening criteria and fewer misleading comparisons. No investment return or cost saving has been established by this project.
+
+[Back to Table of Contents](#table-of-contents)
+
+## 8. Limitations & Further Investigation
+
+1. **Dataset provenance and timing:** The original README does not specify a source URL, extraction date, refresh date or validation report. Its figures should be read as *reported project results* until checked against the raw dataset.
+2. **Selection and survivorship bias:** Unicorn-only records exclude most startups that did not reach a billion-dollar valuation. Results cannot be generalized to all funded startups.
+3. **Reported valuations are not realized returns:** Company valuations and cumulative funding do not establish ROI, cash flows, dilution-adjusted multiples or fund-level performance. The original labels “ROI,” “return multiple,” and “cash burner” are therefore not used as verified conclusions.
+4. **Valuation/funding comparability:** Funding may be incomplete or not aligned with valuation dates. Missing and zero funding require explicit handling.
+5. **Growth-velocity measurement:** `YEAR(date_joined) − year_founded` is approximate. Valuation divided by elapsed years is a proxy, not a measured annual growth rate.
+6. **Investor attribution:** Investor lists may be partial; assigning an entire company's valuation to every named investor double-counts exposure and cannot estimate ownership value.
+7. **Geographic conclusions:** Average valuations and counts do not measure deal access, entry price or geographic investment arbitrage.
+8. **Macroeconomic explanations:** The analysis describes the 2021 spike and 2022 slowdown but does not independently establish their causes.
 
 ### Additional evidence that would improve the project
 
-  -----------------------------------------------------------------------
-  Area                    Additional evidence     Purpose
-  ----------------------- ----------------------- -----------------------
-  Capital efficiency      Dated funding rounds,   Separate valuation
-                          valuation dates,        proxies from realised
-                          dilution, revenues and  performance
-                          exits
-
-  Sector velocity         Exact founding and      Reduce timing error and
-                          unicorn dates, full     survivorship bias
-                          startup cohorts and
-                          failure data
-
-  Investor network        Standardised investor   Improve network
-                          IDs, ownership stakes   reliability and
-                          and complete round      economic interpretation
-                          histories
-
-  Geographic comparison   Stage-adjusted deal     Test whether alleged
-                          prices, funding         efficiency hubs are
-                          availability, exits and investable or
-                          liquidity               underpriced
-
-  Historical trends       Dated unicorn snapshots Support robust cohort
-                          and contemporaneous     and contextual
-                          VC/macro data           comparisons
-
-  Data quality            Source documentation,   Make the analysis
-                          extraction timestamp    reproducible and track
-                          and repeatable          changes between
-                          validation checks       refreshes
-  -----------------------------------------------------------------------
+| Area | Additional evidence | Purpose |
+|---|---|---|
+| Capital efficiency | Dated funding rounds, valuations, dilution, revenues and exits | Separate valuation proxies from realized performance |
+| Sector velocity | Founding and unicorn dates, full startup cohorts, failure data | Reduce timing error and survivorship bias |
+| Investor network | Standardized investor IDs, ownership stakes, complete round histories | Improve network reliability and economic interpretation |
+| Geographic comparison | Stage-adjusted deal prices, funding availability, exits and liquidity | Test whether alleged efficiency hubs are investable or underpriced |
+| Historical trends | Dated unicorn snapshots and contemporaneous VC/macro data | Support robust cohort and contextual comparisons |
 
 [Back to Table of Contents](#table-of-contents)
 
-## 8. Project Files & Deliverables
+## 9. Project Files & Deliverables
 
-  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  Resource                                                                                                                                                                Description
-  ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- -----------------------------------
-  [Interactive Power BI                                                                                                                                                   Published dashboard; access depends
-  dashboard](https://app.powerbi.com/links/NDQXqXVVke?ctid=319a61c8-ee1e-4161-8f35-b9553227afd7&pbi_source=linkShare&bookmarkGuid=6aa14441-554f-4a07-b90e-b58e37eac958)   on Power BI permissions
+| Resource | Description |
+|---|---|
+| [Interactive Power BI dashboard](https://app.powerbi.com/links/NDQXqXVVke?ctid=319a61c8-ee1e-4161-8f35-b9553227afd7&pbi_source=linkShare&bookmarkGuid=6aa14441-554f-4a07-b90e-b58e37eac958) | Dashboard published at the link in the original project README; access depends on Power BI permissions |
+| [Main SQL analysis script](SQL_Query/SQL_query_for_Unicorn.sql) | Cleaning, derived metrics, trends, comparisons and investor network queries |
+| [Capital efficiency chart](dashboard_pic/CAPITAL_EFFICIENCY.PNG) | Valuation-to-funding screening |
+| [Industry velocity chart](dashboard_pic/high_growth_velocity.PNG) | Industry growth-velocity proxies |
+| [Investor network chart](dashboard_pic/kingmaker_network.PNG) | Investor concentration and co-occurrence |
+| [Geography chart](dashboard_pic/GEOGRAPHICAL_ARBITRAGE.PNG) | Geographic valuation/count comparisons |
 
-  [Main SQL analysis script](SQL_Query/SQL_query_for_Unicorn.sql)                                                                                                         SQL preparation and analysis
-                                                                                                                                                                          script; confirm the repository copy
-                                                                                                                                                                          reflects the latest
-                                                                                                                                                                          `Unicorn_Company` pipeline
-
-  `Fact_Unicorn.csv`                                                                                                                                                      Company-level export used by Power
-                                                                                                                                                                          BI
-
-  `Bridge_Investors.csv`                                                                                                                                                  Distinct company-investor
-                                                                                                                                                                          relationship export used by Power
-                                                                                                                                                                          BI
-
-  `dashboard_pic/CAPITAL_EFFICIENCY.PNG`                                                                                                                                  Valuation-to-funding screening
-                                                                                                                                                                          visual
-
-  `dashboard_pic/high_growth_velocity.PNG`                                                                                                                                Industry growth-velocity visual
-
-  `dashboard_pic/kingmaker_network.PNG`                                                                                                                                   Investor participation and
-                                                                                                                                                                          co-occurrence visual
-
-  `dashboard_pic/GEOGRAPHIC_ECOSYSTEM.PNG`                                                                                                                              Geographic valuation and
-                                                                                                                                                                          company-count comparison
-  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-**[Full data dictionary](Global_Unicorn_Data_Dictionary.md)** — field definitions, data types, derivations, table grain and data-handling notes.
-
-**Repository note:** Confirm that each dashboard image and SQL file exists with the exact spelling and capitalisation in the GitHub repository. The
-two CSV filenames describe the updated data-delivery design; include
-them as repository links only after the files have actually been
-committed. The full underlying source dataset and Power BI source file
-should only be listed as downloadable deliverables if they are included
-in the repository.
+**Repository note:** These paths are retained from the uploaded README. Confirm that the corresponding files exist with the exact spelling and capitalization in the GitHub repository. The full underlying dataset and Power BI source file were not included with the uploaded README and should only be listed as downloadable deliverables if they are actually provided.
 
 [Back to Table of Contents](#table-of-contents)
 
-## 9. Potential Extensions
+## 10. Potential Extensions
 
-1.  **Unicorn prediction research:** Explore a carefully time-split
-    model using information available before unicorn status, with
-    non-unicorn examples, leakage controls and a clear prediction
-    target.
-2.  **Investor network visualisation:** Build a graph of
-    investor-company and investor-pair relationships, with consistent
-    entity identifiers, coverage checks and measures that distinguish
-    participation from ownership.
-3.  **Funding-cycle analysis:** Compare dated funding activity and
-    valuations with macroeconomic conditions, while testing temporal
-    direction and potential confounding factors.
-4.  **Geographic ecosystem benchmarking:** Add stage-adjusted deal
-    values, funding availability, exit outcomes and liquidity measures
-    to test whether high-valuation/low-count locations offer any
-    defensible comparative advantage.
-5.  **Reproducible data refresh:** Automate source validation, profiling,
-    anomaly reporting and dashboard refresh checks so each update
-    records what changed and whether documented findings still hold.
+1. **Unicorn prediction research:** Explore a carefully time-split model using information available before unicorn status, with negative examples and leakage controls.
+2. **Investor network visualization:** Build a graph of investor-company and investor-pair relationships, with consistent entity IDs and coverage checks.
+3. **News sentiment and funding cycles:** Compare dated media sentiment with funding activity and reported valuations while testing temporal direction and confounding factors.
 
-These are **future research ideas**, not completed parts of the current
-project.
+These are **future research ideas**, not completed parts of the current project.
 
 [Back to Table of Contents](#table-of-contents)
-
-------------------------------------------------------------------------
