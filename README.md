@@ -38,7 +38,7 @@ The analysis combines currency-normalized financial figures, founding-to-unicorn
 
 ## 2. Business Problem & Stakeholders
 
-Headline unicorn counts and aggregate valuations offer an incomplete—and often misleading—view of global venture markets. In this dataset, **52.3% of all unicorns (562 companies)** are concentrated in the United States, and **48.4% (520 companies)** reached unicorn status during a single anomalous year (2021). Relying purely on raw unicorn headcount obscures capital burn, survivorship dynamics, and smaller high-efficiency hubs.
+Headline unicorn counts and aggregate valuations offer an incomplete and often misleading view of global venture markets. In this dataset, **52.3% of all unicorns (562 companies)** are concentrated in the United States, and **48.4% (520 companies)** reached unicorn status during a single anomalous year (2021). Relying purely on raw unicorn headcount obscures capital burn, survivorship dynamics, and smaller high-efficiency hubs.
 
 An investment-research or venture-strategy team building an initial screening shortlist therefore commissioned an exploratory investigation to evaluate five core ecosystem dimensions:
 
