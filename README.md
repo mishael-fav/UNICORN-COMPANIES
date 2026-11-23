@@ -101,7 +101,7 @@ At the top of the distribution, product-led software and fintech companies demon
 
 By contrast, the bottom tier (**Cash Burners, <2x ratio**) is heavily concentrated in **Auto & Transportation** and hardware—including **Magic Leap (\~0.67x)**, **Fair**, **Snapdeal**, **Ola Cabs**, and **WM Motor**. These companies raised more cumulative capital than their current reported valuations, illustrating the capital intensity of manufacturing vehicles, leasing fleets, and building physical infrastructure.
 
-![Capital efficiency dashboard](images/ccapitalefficiency.PNG)
+![Capital efficiency dashboard](images/capitalefficiency.PNG)
 
 **Business Implication:**  
 Capital intensity fundamentally alters risk-return dynamics and portfolio construction across venture sectors. Asset-light software and marketplace models (`Elite Efficiency 10x+`) require significantly less dilutive follow-on equity to scale, preserving ownership stakes and insulating investors when late-stage capital markets tighten. Conversely, capital-intensive physical industries (`Cash Burners <2x`) demand massive continuous funding to build factories, fleets, or hardware exposing late-stage investors to severe valuation compression and down-round risk if growth decelerates. Screening pipelines must therefore separate operational unit-economics leverage from headline valuation size rather than treating all \$1B+ valuations as structurally equivalent.
