@@ -78,7 +78,6 @@ The project transforms a raw flat table (`Unicorn_Company`) into a normalized tw
 
 > The complete preprocessing pipeline and analytical queries are preserved in [SQL_Query/SQL_query_for_Unicorn.sql](SQL_Query/SQL_query_for_Unicorn.sql).
 
-[↑ Back to Table of Contents](#table-of-contents)
 
 ## 4. Executive Summary
 
@@ -102,7 +101,7 @@ At the top of the distribution, product-led software and fintech companies demon
 
 By contrast, the bottom tier (**Cash Burners, <2x ratio**) is heavily concentrated in **Auto & Transportation** and hardware—including **Magic Leap (\~0.67x)**, **Fair**, **Snapdeal**, **Ola Cabs**, and **WM Motor**. These companies raised more cumulative capital than their current reported valuations, illustrating the capital intensity of manufacturing vehicles, leasing fleets, and building physical infrastructure.
 
-![Capital efficiency dashboard](images/capital_efficiency.jpg)
+![Capital efficiency dashboard](images/ccapitalefficiency.PNG)
 
 **Business Implication:**  
 Capital intensity fundamentally alters risk-return dynamics and portfolio construction across venture sectors. Asset-light software and marketplace models (`Elite Efficiency 10x+`) require significantly less dilutive follow-on equity to scale, preserving ownership stakes and insulating investors when late-stage capital markets tighten. Conversely, capital-intensive physical industries (`Cash Burners <2x`) demand massive continuous funding to build factories, fleets, or hardware exposing late-stage investors to severe valuation compression and down-round risk if growth decelerates. Screening pipelines must therefore separate operational unit-economics leverage from headline valuation size rather than treating all \$1B+ valuations as structurally equivalent.
@@ -135,7 +134,7 @@ In Europe, **London** dominates headcount (**34 unicorns**), but **Stockholm** r
 
 A similar quality-versus-volume contrast appears within North America: despite New York City hosting more than six times as many unicorns as **Boston (103 vs. 16)**, Boston commands nearly double the average valuation (**\$4.3B vs. \$2.2B**), driven by capital-rich Biotech and Robotics ventures compared to NYC's broader tail of smaller fintech and media startups. In South America, **São Paulo** leads the continent with a **\$2.4B** average valuation comparable to Berlin and Paris.
 
-![Global ecosystem dashboard](dashboard_pic/GEOGRAPHICAL_ARBITRAGE.PNG)
+![Global ecosystem dashboard](images/geographicecosystem.PNG)
 
 **Business Implication:**  
 Venture sourcing strategies confined exclusively to top-headcount hubs (San Francisco, New York, Beijing, London) risk overlooking specialized deep-tech, hardware, and biotech ecosystems where winning companies scale to substantially higher average valuations. While high city averages reflect concentrated decacorn outliers rather than discounted equity entry prices, ecosystems like Boston, Stockholm, and Shenzhen demonstrate stronger per-startup value concentration due to specialized technical talent pools and industrial supply chains. Geographic market coverage should therefore balance high-frequency deal flow in generalist hubs with targeted, thesis-driven scouting in specialized regional centers.
@@ -154,7 +153,7 @@ Bilateral syndicate pairing (`COUNT(DISTINCT Company) >= 3`) surfaces three dist
 
 3. **The India Digital Growth Bloc (`Sequoia Capital India` + `Tiger Global` + `Lightspeed India`):** Repeatedly co-invests across Indian fintech and consumer platforms (including Razorpay, CRED, and BYJU'S).
 
-![Investor network dashboard](dashboard_pic/kingmaker_network.PNG)
+![Investor network dashboard](images/kingmakernetwork.PNG)
 
 **Business Implication:**  
 Unicorn formation is heavily mediated by structured institutional pipelines rather than isolated, one-off investments. In emerging ecosystems such as China and India, winning startups frequently pair top-tier venture capital with strategic corporate distribution or coordinated multi-fund growth syndicates, whereas Silicon Valley exhibits clear stage-to-stage graduation pathways from seed accelerators (`Y Combinator`) into growth-round leaders (`Accel`). For corporate development and co-investment teams, tracking early-stage portfolios backed by feeder accelerators alongside repeat Series B/C syndicate partners provides an actionable leading indicator of startups entering high-probability scaling trajectories.
@@ -244,7 +243,6 @@ The dataset reflects a static historical snapshot through 2022 entries without a
 
 This project provides a structured, multi-dimensional diagnostic of global unicorn ecosystems—demonstrating how combining star-schema SQL modeling with interactive Power BI visual analysis moves venture screening beyond simplistic headcount rankings. Moving from exploratory screening to live investment execution requires integrating round-level pricing, non-unicorn failure baselines, and refreshed post-2022 market data.
 
-[↑ Back to Table of Contents](#table-of-contents)
 
 ## 8. Project Files & Deliverables
 
