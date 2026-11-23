@@ -50,14 +50,26 @@ An investment-research or venture-strategy team building an initial screening sh
 | Geographic Concentration | **562 US / 148 SF / 103 NYC** | Contrast high-volume hubs against high-average-valuation cities | 
 | Historical Cohort Shift | **520 entries in 2021** | Isolate macro liquidity anomalies from pre-COVID baseline trends | 
 
-The **Head of Venture Research** needed to identify which sectors, hubs, and investor networks warrant deeper due diligence. Different market assumptions were framed as hypotheses to test rather than accept at face value:
+The **Head of Venture Research** needed to identify which sectors, hubs, and investor networks warrant deeper due diligence. The four stakeholder assumptions were examined against measurable indicators drawn from the unicorn dataset, covering geographic concentration, sector growth velocity, capital efficiency and investor participation. The preliminary assessments below distinguish patterns supported by the available evidence from assumptions that remain unconfirmed, highlighting where further analysis is required before making investment conclusions:
 
-| Market Assumption / Stakeholder Lens | Initial Hypothesis to Test | 
+| Stakeholder Lens | Measurable evidence | Preliminary assessment |
 | ----- | ----- | 
-| Growth Equity | High-volume hubs (San Francisco, Beijing, London) also yield the highest average valuation per startup | 
-| Sector Strategy | Software startups always reach \$1B faster than hardware or mobility companies | 
-| Capital Allocation | High unicorn valuations automatically indicate strong capital efficiency and low burn | 
-| Syndicate Sourcing | Unicorn backing is broadly distributed rather than concentrated among repeat co-investor blocs | 
+| Growth Equity | US accounts for 52.3% of reported unicorn records; San Francisco has 148 and New York 103. Average valuation by city remains to be calculated | Geographic concentration observed; valuation advantage not established |
+| Sector Strategy | AI averages 5.9 years to unicorn status, compared with 5.03 years for Auto & Transportation | A universal software speed advantage is not established |
+| Capital Allocation | Valuation-to-funding ratios vary substantially, with reported examples approaching 4,000x | High valuation does not automatically indicate capital efficiency |
+| Syndicate Sourcing | Accel has approximately 60 reported company associations; Sequoia China and Tencent co-occurred nine times | Evidence of repeated investor participation; overall network concentration requires further measurement |
+
+
+**Stakeholder Assumptions and Hypothesis Assessment**
+
+The four stakeholder assumptions were examined against measurable indicators drawn from the unicorn dataset, covering geographic concentration, sector growth velocity, capital efficiency and investor participation. The preliminary assessments distinguish patterns supported by the available evidence from assumptions that remain unconfirmed.
+
+| Market Assumption / Stakeholder Lens | Initial Hypothesis to Test | Metrics Examined | Analytical Finding |
+|---|---|---|---|
+| **Growth Equity** | High-volume startup hubs, such as San Francisco, Beijing and London, also generate the highest average valuation per unicorn. | Unicorn count by city; average and median valuation by city; share of total unicorns. | Geographic concentration was evident. However, the relationship between unicorn volume and average valuation requires direct comparison before the hypothesis can be confirmed. |
+| **Sector Strategy** | Software startups reach unicorn status faster than hardware or mobility companies. | Average and median years to unicorn by industry; number of companies analysed per industry. | Time-to-unicorn varied across sectors. Previously reported averages of 5.9 years for AI and 5.03 years for Auto & Transportation do not establish a universal software advantage. |
+| **Capital Allocation** | Companies with higher unicorn valuations also demonstrate stronger capital efficiency and lower funding requirements. | Valuation-to-funding ratio; median efficiency ratio; distribution across efficiency categories. | Valuation relative to funding varied substantially across companies. High valuation alone was insufficient to establish capital efficiency or low cash burn. |
+| **Syndicate Sourcing** | Unicorn investment is broadly distributed rather than concentrated among recurring investor groups and co-investment networks. | Investor participation frequency; top investor concentration; investor-pair co-occurrence; investor concentration index. | Repeated investor participation and co-investment relationships were observed. The overall degree of network concentration requires further measurement. |
 
 [↑ Back to Table of Contents](#table-of-contents)
 
