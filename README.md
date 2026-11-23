@@ -115,7 +115,7 @@ Evaluating average founding-to-unicorn duration (`Avg_Years_To_Unicorn`) alongsi
 
 Conversely, **Consumer & Retail** posts the **#1 value velocity (\$1.25B/year)** despite requiring **8.08 years** on average to reach unicorn status, reflecting a winner-takes-all dynamic skewed by mega-outliers such as **SHEIN** and **Juul**. Meanwhile, **Internet Software & Services** leads total unicorn volume (**205 companies**) but records the lowest value velocity among major sectors (**\$500M/year**), signaling market maturity and heavier competition.
 
-![Industry growth velocity dashboard](dashboard_pic/high_growth_velocity.PNG)
+![Industry growth velocity dashboard](images/unicornvelocity.PNG)
 
 | Sector Profile | Representative Sector | Avg. Years to Unicorn | Value Velocity Proxy | Structural Pattern | 
 | ----- | ----- | ----- | ----- | ----- | 
