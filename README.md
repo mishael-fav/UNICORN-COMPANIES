@@ -50,19 +50,10 @@ An investment-research or venture-strategy team building an initial screening sh
 | Geographic Concentration | **562 US / 148 SF / 103 NYC** | Contrast high-volume hubs against high-average-valuation cities | 
 | Historical Cohort Shift | **520 entries in 2021** | Isolate macro liquidity anomalies from pre-COVID baseline trends | 
 
-The **Head of Venture Research** needed to identify which sectors, hubs, and investor networks warrant deeper due diligence. The four stakeholder assumptions were examined against measurable indicators drawn from the unicorn dataset, covering geographic concentration, sector growth velocity, capital efficiency and investor participation. The preliminary assessments below distinguish patterns supported by the available evidence from assumptions that remain unconfirmed, highlighting where further analysis is required before making investment conclusions:
-
-| Stakeholder Lens | Measurable evidence | Preliminary assessment |
-| ----- | ----- | 
-| Growth Equity | US accounts for 52.3% of reported unicorn records; San Francisco has 148 and New York 103. Average valuation by city remains to be calculated | Geographic concentration observed; valuation advantage not established |
-| Sector Strategy | AI averages 5.9 years to unicorn status, compared with 5.03 years for Auto & Transportation | A universal software speed advantage is not established |
-| Capital Allocation | Valuation-to-funding ratios vary substantially, with reported examples approaching 4,000x | High valuation does not automatically indicate capital efficiency |
-| Syndicate Sourcing | Accel has approximately 60 reported company associations; Sequoia China and Tencent co-occurred nine times | Evidence of repeated investor participation; overall network concentration requires further measurement |
-
 
 **Stakeholder Assumptions and Hypothesis Assessment**
 
-The four stakeholder assumptions were examined against measurable indicators drawn from the unicorn dataset, covering geographic concentration, sector growth velocity, capital efficiency and investor participation. The preliminary assessments distinguish patterns supported by the available evidence from assumptions that remain unconfirmed.
+The **Head of Venture Research** needed to identify which sectors, hubs, and investor networks warrant deeper due diligence. The four stakeholder assumptions were examined against measurable indicators drawn from the unicorn dataset, covering geographic concentration, sector growth velocity, capital efficiency and investor participation. The preliminary assessments distinguish patterns supported by the available evidence from assumptions that remain unconfirmed.
 
 | Market Assumption / Stakeholder Lens | Initial Hypothesis to Test | Metrics Examined | Analytical Finding |
 |---|---|---|---|
